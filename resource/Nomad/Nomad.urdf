@@ -1,0 +1,186 @@
+<?xml version="1.0" ?>
+<robot name="Nomad">
+
+<material name="silver">
+  <color rgba="0.700 0.700 0.700 1.000"/>
+</material>
+
+<link name="base_link">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.013417226758864191 -0.026438366790666842 -0.03098253987913053"/>
+    <mass value="7.166707013041554"/>
+    <inertia ixx="0.01106805740051774" ixy="-2.688821387764051e-17" ixz="2.6020852139652106e-18" iyy="0.02336629547074094" iyz="1.6479873021779667e-17" izz="0.015284365992323856"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <mesh filename="meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="HFE_Actuator1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="2.355489730904159e-07 -0.028017105086293764 0.0005418477318708086"/>
+    <mass value="0.22819661408568134"/>
+    <inertia ixx="0.00022867987683109544" ixy="-4.8251647875819856e-11" ixz="1.0859538501729535e-12" iyy="0.00033739620126913065" iyz="-3.1919090569470588e-06" izz="0.0002340324473857605"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.013417 0.051438 0.030983"/>
+    <geometry>
+      <mesh filename="meshes/HFE_Actuator1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.013417 0.051438 0.030983"/>
+    <geometry>
+      <mesh filename="meshes/HFE_Actuator1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="KFE_Actuator1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.0025125273070217644 -0.03773429985642904 0.00019195849646111082"/>
+    <mass value="0.3024397808873297"/>
+    <inertia ixx="0.0003757916597388533" ixy="-1.8586947228952733e-05" ixz="1.986498510634429e-06" iyy="0.0004330757435118894" iyz="-1.4167962299270042e-06" izz="0.00034988188581722927"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.013417 0.098438 0.030983"/>
+    <geometry>
+      <mesh filename="meshes/KFE_Actuator1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.013417 0.098438 0.030983"/>
+    <geometry>
+      <mesh filename="meshes/KFE_Actuator1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Upper_Leg1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="0.0143586261367187 -0.008509623980640452 -0.09162607915766485"/>
+    <mass value="0.28719650282800196"/>
+    <inertia ixx="0.0019274860541081355" ixy="-4.984293958382787e-06" ixz="0.00017191518900745132" iyy="0.0020438268444529714" iyz="3.828968680260215e-05" izz="0.00018690033165804504"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.013417 0.162438 0.030983"/>
+    <geometry>
+      <mesh filename="meshes/Upper_Leg1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.013417 0.162438 0.030983"/>
+    <geometry>
+      <mesh filename="meshes/Upper_Leg1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Lower_Leg1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-0.03864247059977867 0.011139963948639364 -0.001983186996966646"/>
+    <mass value="0.1002751137848322"/>
+    <inertia ixx="1.2789903629975563e-05" ixy="-1.7793573590631695e-07" ixz="-3.4587073565705813e-06" iyy="0.000348285927696753" iyz="7.604946543164626e-09" izz="0.0003440245076319682"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="-0.013419 0.180438 0.280983"/>
+    <geometry>
+      <mesh filename="meshes/Lower_Leg1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="-0.013419 0.180438 0.280983"/>
+    <geometry>
+      <mesh filename="meshes/Lower_Leg1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Foot1">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-0.022872859875313872 -3.667906789128761e-07 -0.006674882318538133"/>
+    <mass value="0.07686399002843462"/>
+    <inertia ixx="1.4697350582522362e-05" ixy="2.949029909160572e-17" ixz="-5.876649622509576e-06" iyy="4.390760285276872e-05" iyz="1.2576745200831851e-17" izz="3.596310228595398e-05"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0.211579 0.169438 0.283692"/>
+    <geometry>
+      <mesh filename="meshes/Foot1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0.211579 0.169438 0.283692"/>
+    <geometry>
+      <mesh filename="meshes/Foot1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="base_to_hip_motor" type="fixed">
+  <origin rpy="0 0 0" xyz="0.013417 -0.051438 -0.030983"/>
+  <parent link="base_link"/>
+  <child link="HFE_Actuator1"/>
+</joint>
+
+<joint name="hip_motor_to_knee_motor" type="continuous">
+  <origin rpy="0 0 0" xyz="0.0 -0.047 0.0"/>
+  <parent link="HFE_Actuator1"/>
+  <child link="KFE_Actuator1"/>
+  <axis xyz="0.0 -1.0 -0.0"/>
+</joint>
+<transmission name="hip_motor_to_knee_motor_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="hip_motor_to_knee_motor">
+    <hardwareInterface>PositionJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="hip_motor_to_knee_motor_actr">
+    <hardwareInterface>PositionJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<joint name="knee_motor_upper_leg" type="fixed">
+  <origin rpy="0 0 0" xyz="0.0 -0.064 0.0"/>
+  <parent link="KFE_Actuator1"/>
+  <child link="Upper_Leg1"/>
+</joint>
+
+<joint name="upper_leg_to_lower_leg" type="continuous">
+  <origin rpy="0 0 0" xyz="2e-06 -0.018 -0.25"/>
+  <parent link="Upper_Leg1"/>
+  <child link="Lower_Leg1"/>
+  <axis xyz="0.0 -1.0 -0.0"/>
+</joint>
+<transmission name="upper_leg_to_lower_leg_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="upper_leg_to_lower_leg">
+    <hardwareInterface>PositionJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="upper_leg_to_lower_leg_actr">
+    <hardwareInterface>PositionJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<joint name="knee_to_foot" type="fixed">
+  <origin rpy="0 0 0" xyz="-0.224998 0.011 -0.002709"/>
+  <parent link="Lower_Leg1"/>
+  <child link="Foot1"/>
+</joint>
+
+</robot>
