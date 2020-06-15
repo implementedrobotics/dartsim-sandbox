@@ -20,10 +20,11 @@ int main(int argc, char *argv[])
 
     auto world = World::create();
     world->addSkeleton(leg);
-
+    
     ::osg::ref_ptr<dart::gui::osg::RealTimeWorldNode> node = new dart::gui::osg::RealTimeWorldNode(world);
 
     auto viewer = dart::gui::osg::Viewer();
+    viewer.allowSimulation(true);
     viewer.addWorldNode(node);
     viewer.setUpViewInWindow(0,0,640,480);
     viewer.getCameraManipulator()->setHomePosition(::osg::Vec3(2.57f, 3.14f, 1.64f),

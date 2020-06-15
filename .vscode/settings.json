@@ -52,6 +52,11 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "utility": "cpp",
-        "view": "cpp"
+        "view": "cpp",
+        "object": "cpp",
+        "operationthread": "cpp",
+        "stats": "cpp",
+        "databasepager": "cpp",
+        "light": "cpp"
     }
 }
