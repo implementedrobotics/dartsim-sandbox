@@ -1,6 +1,7 @@
 {
     "C_Cpp.default.configurationProvider": "go2sh.cmake-integration",
     "files.associations": {
+        "*.zcm": "c",
         "vec3f": "cpp",
         "cameramanipulator": "cpp",
         "array": "cpp",
@@ -57,6 +58,14 @@
         "operationthread": "cpp",
         "stats": "cpp",
         "databasepager": "cpp",
-        "light": "cpp"
+        "light": "cpp",
+        "block": "cpp",
+        "random": "cpp",
+        "nodevisitor": "cpp",
+        "timer": "cpp",
+        "uniform": "cpp",
+        "globjectsvisitor": "cpp",
+        "intersectionvisitor": "cpp",
+        "renderleaf": "cpp"
     }
 }

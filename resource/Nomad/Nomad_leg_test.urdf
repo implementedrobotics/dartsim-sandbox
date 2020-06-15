@@ -15,21 +15,21 @@
 
 
 <link name="world"/>
-
+<!--
 <joint name="leg_to_world_fixed" type="fixed">
     <parent link="world"/>
     <child link="base_link"/>
     <origin xyz="0 0.0 0.5" rpy="0 0 0" />
 </joint>
+-->
 
-<!--
-<joint name="leg_to_world_fixed" type="prismatic">
+<joint name="leg_to_world" type="prismatic">
     <parent link="world"/>
     <child link="base_link"/>
-    <origin xyz="0 0.0 2.0" rpy="0 0 0" />
+    <origin xyz="0 0.0 0.0" rpy="0 0 0" />
     <axis xyz="0.0 0.0 1.0"/>
-    <limit effort="1000.0" velocity="0.2" lower="-0.1" upper="2.0" />
-</joint>-->
+    <limit effort="1000.0" velocity="100.0" lower="-1.0" upper="3.0" />
+</joint>
 
 
 <link name="base_link">
@@ -53,7 +53,7 @@
   </collision>
 </link>
 
-<link name="HFE_Actuator">
+<link name="hfe_motor">
   <inertial>
     <origin rpy="0 0 0" xyz="2.355489730904159e-07 -0.028017105086293764 0.0005418477318708086"/>
     <mass value="0.22819661408568134"/>
@@ -74,7 +74,7 @@
   </collision>
 </link>
 
-<link name="KFE_Actuator">
+<link name="kfe_motor">
   <inertial>
     <origin rpy="0 0 0" xyz="0.0025125273070217644 -0.03773429985642904 0.00019195849646111082"/>
     <mass value="0.3024397808873297"/>
@@ -95,7 +95,7 @@
   </collision>
 </link>
 
-<link name="Upper_Leg">
+<link name="upper_Leg">
   <inertial>
     <origin rpy="0 0 0" xyz="0.0143586261367187 -0.008509623980640452 -0.09162607915766485"/>
     <mass value="0.28719650282800196"/>
@@ -116,7 +116,7 @@
   </collision>
 </link>
 
-<link name="Lower_Leg">
+<link name="lower_Leg">
   <inertial>
     <origin rpy="0 0 0" xyz="-0.03864247059977867 0.011139963948639364 -0.001983186996966646"/>
     <mass value="0.1002751137848322"/>
@@ -137,7 +137,7 @@
   </collision>
 </link>
 
-<link name="Foot">
+<link name="foot">
   <inertial>
     <origin rpy="0 0 0" xyz="-0.022872859875313872 -3.667906789128761e-07 -0.006674882318538133"/>
     <mass value="0.07686399002843462"/>
@@ -158,18 +158,20 @@
   </collision>
 </link>
 
-<joint name="base_to_hip_motor" type="fixed">
+<joint name="base_to_hfe_motor" type="fixed">
   <origin rpy="0 0 0" xyz="0.013417 -0.051438 -0.030983"/>
   <parent link="base_link"/>
-  <child link="HFE_Actuator"/>
+  <child link="hfe_motor"/>
 </joint>
 
-<joint name="hip_motor_to_knee_motor" type="continuous">
+<joint name="hfe_motor_to_kfe_motor" type="continuous">
   <origin rpy="0 0 0" xyz="0.0 -0.047 0.0"/>
-  <parent link="HFE_Actuator"/>
-  <child link="KFE_Actuator"/>
+  <parent link="hfe_motor"/>
+  <child link="kfe_motor"/>
   <axis xyz="0.0 -1.0 -0.0"/>
 </joint>
+
+<!--
 <transmission name="hip_motor_to_knee_motor_tran">
   <type>transmission_interface/SimpleTransmission</type>
   <joint name="hip_motor_to_knee_motor">
@@ -180,19 +182,21 @@
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
-
+-->
 <joint name="knee_motor_upper_leg" type="fixed">
   <origin rpy="0 0 0" xyz="0.0 -0.064 0.0"/>
-  <parent link="KFE_Actuator"/>
-  <child link="Upper_Leg"/>
+  <parent link="kfe_motor"/>
+  <child link="upper_Leg"/>
 </joint>
 
-<joint name="upper_leg_to_lower_leg" type="continuous">
+<joint name="kfe_joint" type="continuous">
   <origin rpy="0 0 0" xyz="2e-06 -0.018 -0.25"/>
-  <parent link="Upper_Leg"/>
-  <child link="Lower_Leg"/>
+  <parent link="upper_Leg"/>
+  <child link="lower_Leg"/>
   <axis xyz="0.0 -1.0 -0.0"/>
 </joint>
+
+<!--
 <transmission name="upper_leg_to_lower_leg_tran">
   <type>transmission_interface/SimpleTransmission</type>
   <joint name="upper_leg_to_lower_leg">
@@ -203,11 +207,12 @@
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
+-->
 
 <joint name="knee_to_foot" type="fixed">
   <origin rpy="0 0 0" xyz="-0.224998 0.011 -0.002709"/>
-  <parent link="Lower_Leg"/>
-  <child link="Foot"/>
+  <parent link="lower_Leg"/>
+  <child link="foot"/>
 </joint>
 
 </robot>

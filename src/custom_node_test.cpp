@@ -1,5 +1,7 @@
 #include <dart/dynamics/Skeleton.hpp>
 #include <dart/dynamics/DegreeOfFreedom.hpp>
+#include <dart/dynamics/WeldJoint.hpp>
+#include <dart/dynamics/SphereShape.hpp>
 #include <dart/simulation/World.hpp>
 #include <dart/utils/urdf/DartLoader.hpp>
 
@@ -9,6 +11,7 @@
 using namespace dart::dynamics;
 using namespace dart::simulation;
 
+SimpleFramePtr mTarget = nullptr;
 SkeletonPtr leg = nullptr;
 class CustomWorldNode : public dart::gui::osg::RealTimeWorldNode
 {
@@ -39,8 +42,11 @@ public:
     // step is performed. This function can be deleted if it does not need
     // to be used.
     //std::cout << "Hello" << std::endl;
-    leg->getDof(0)->setForce(1.50);
-   // std::cout << leg->getDof(1)->getName() << std::endl;
+   // leg->getDof(2)->setForce(20.3);
+
+    
+    // std::cout << leg->getJoint("leg_to_world")->getPosition(0) << std::endl;
+    mTarget->setTranslation(Eigen::Vector3d(0,0,0.5));
   }
 
   void customPostStep()
@@ -71,11 +77,39 @@ dart::gui::osg::InteractiveFramePtr create_interactive_frame(dart::dynamics::Fra
 }
 int main(int argc, char *argv[])
 {
+
+  auto world = World::create();
+
     dart::utils::DartLoader loader;
-    std::string urdf = "/home/nomad/dev/dartsim-sandbox/resource/Nomad/Nomad_leg_test.urdf";
+    std::string urdf = std::getenv("NOMAD_RESOURCE_PATH");
+    urdf.append("/Nomad/Nomad_leg_test.urdf");
+
+
+
+  // Setup Ground
+  SkeletonPtr ground = Skeleton::create("ground");
+
+  // Give the ground a body
+  BodyNodePtr body
+      = ground->createJointAndBodyNodePair<WeldJoint>(nullptr).second;
+
+
+  double thickness = 0.1;
+
+  ShapePtr groundShape = std::make_shared<BoxShape>(Eigen::Vector3d(1,1,thickness));
+  auto shapeNode = body->createShapeNodeWith<VisualAspect, CollisionAspect, DynamicsAspect>(groundShape);
+
+  shapeNode->getVisualAspect()->setColor(dart::Color::LightGray());
+
+  Eigen::Isometry3d tf(Eigen::Isometry3d::Identity());
+  tf.translation() = Eigen::Vector3d(0,0,-thickness / 2.0);
+  body->getParentJoint()->setTransformFromParentBodyNode(tf);
+
+  world->addSkeleton(ground);
+    //std::string urdf = "/home/nomad/dev/dartsim-sandbox/resource/Nomad/Nomad_leg_test.urdf";
     leg = loader.parseSkeleton(urdf);
 
-    auto world = World::create();
+    
     world->addSkeleton(leg);
     
     ::osg::ref_ptr<CustomWorldNode> node = new CustomWorldNode(world);
@@ -92,11 +126,11 @@ int main(int argc, char *argv[])
 
     //world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("HFE_Actuator"), "hfe_link/frame"));
     //world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("KFE_Actuator"), "kfe_link/frame"));
-    world->addSimpleFrame(create_interactive_frame(dart::dynamics::Frame::World(), "world/frame"));
-    world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("base_link"), "base_link/frame"));
-    world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("Upper_Leg"), "upper_link/frame"));
-    world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("Lower_Leg"), "lower_link/frame"));
-    world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("Foot"), "foot/frame"));
+   // world->addSimpleFrame(create_interactive_frame(dart::dynamics::Frame::World(), "world/frame"));
+   // world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("base_link"), "base_link/frame"));
+   // world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("upper_Leg"), "upper_link/frame"));
+   // world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("lower_Leg"), "lower_link/frame"));
+   // world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("foot"), "foot/frame"));
 
     //dart::gui::osg::InteractiveFramePtr frame = std::make_shared<dart::gui::osg::InteractiveFrame>(Frame::World(), "foot", tf);
     //world->addSimpleFrame(frame);
@@ -122,12 +156,13 @@ int main(int argc, char *argv[])
 
     Eigen::Vector3d gravity(0.0, 0.0, -9.81);
     world->setGravity(gravity);
-
+    
+    
     //world->setGravity([0,-10,0]);
     auto viewer = dart::gui::osg::Viewer();
 
     viewer.addWorldNode(node);
-    viewer.setUpViewInWindow(0,0,640,480);
+    viewer.setUpViewInWindow(0,0,1280,1024);
     viewer.getCameraManipulator()->setHomePosition(::osg::Vec3(0.0f, -5.0f, 0.0f),
     ::osg::Vec3(0.0f, 0.0f, 0.0f),
     ::osg::Vec3(0.0f, 0.0f, 1.0f), false);
@@ -141,24 +176,45 @@ int main(int argc, char *argv[])
     //std::cout << leg->getDof(0)->getName() << std::endl;
     //std::cout << leg->getDof(0)->getName() << std::endl;
     
-    leg->getDof(0)->setPosition(1.5);
+    leg->getJoint("leg_to_world")->setPositionLimitEnforced(true);
+    leg->getDof(0)->setPosition(0.15);
+    leg->getDof(1)->setPosition(1.3);
+    leg->getDof(2)->setPosition(-1.3);
     //leg->getDof(0)->setRestPosition(0);
-    leg->getDof(0)->setDampingCoefficient(0.2);
+    leg->getDof(1)->setDampingCoefficient(100.2);
     //leg->getDof(0)->setSpringStiffness(1000);
-    leg->getDof(1)->setDampingCoefficient(.1);//Velocity(4);
 
-    leg->getJoint("upper_leg_to_lower_leg")->setPositionLimitEnforced(true);
-    leg->getDof("upper_leg_to_lower_leg")->setPositionLimits(-1.32, 1.0);
+    leg->getDof(1)->setDampingCoefficient(0.2);
+    leg->getDof(1)->setSpringStiffness(13);
+    leg->getDof(1)->setRestPosition(0.5);
+
+    leg->getDof(2)->setDampingCoefficient(100.2);
+    leg->getDof(2)->setSpringStiffness(13);
+    leg->getDof(2)->setRestPosition(0.7);
+    leg->getDof(2)->setDampingCoefficient(.1);//Velocity(4);
+
+    leg->getJoint("kfe_joint")->setPositionLimitEnforced(true);
+    leg->getDof("kfe_joint")->setPositionLimits(-1.32, 1.0);
 
    // leg->getDof(0)->setPositionLimits(-0.1,0.1);
    // leg->getDof(0)->setForce(1000);
 
+    Eigen::Isometry3d tf2(Eigen::Isometry3d::Identity());
+    //tf.pretranslate(mOffset);
+    mTarget = std::make_shared<SimpleFrame>(Frame::World(), "target", tf2);
+   // ShapePtr ball = std::make_shared<SphereShape>(0.025);
+ShapePtr ball(new SphereShape(0.025));
+    //ShapePtr ball(new SphereShape(0.025));
+    mTarget->setShape(ball);
+    mTarget->getVisualAspect(true)->setColor(Eigen::Vector3d(0.9, 0, 0));
+    world->addSimpleFrame(mTarget);
+
 
     std::cout << leg->getJoint(2)->getName() << " Joint" << std::endl;
-    leg->getJoint(2)->setPositionLimitEnforced(true);
+    leg->getJoint(3)->setPositionLimitEnforced(true);
     std::cout << "DOF: " << leg->getDof(1)->getName();
-    auto hip_node = leg->getBodyNode("HFE_Actuator");
-    auto foot_node = leg->getBodyNode("Foot");
+    auto hip_node = leg->getBodyNode("hfe_motor");
+    auto foot_node = leg->getBodyNode("foot");
 
     const Eigen::MatrixXd& J = leg->getJacobian(foot_node, hip_node);
     
