@@ -164,7 +164,7 @@
   <child link="hfe_motor"/>
 </joint>
 
-<joint name="hfe_motor_to_kfe_motor" type="continuous">
+<joint name="hfe_joint" type="continuous">
   <origin rpy="0 0 0" xyz="0.0 -0.047 0.0"/>
   <parent link="hfe_motor"/>
   <child link="kfe_motor"/>

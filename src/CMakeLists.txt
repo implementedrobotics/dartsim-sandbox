@@ -14,3 +14,5 @@ target_link_libraries(frame_test PUBLIC ${required_libraries})
 add_executable(custom_node_test custom_node_test.cpp)
 target_link_libraries(custom_node_test PUBLIC ${required_libraries})
 
+add_executable(input_handler_test input_handler_test.cpp)
+target_link_libraries(input_handler_test PUBLIC ${required_libraries})

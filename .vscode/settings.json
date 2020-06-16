@@ -66,6 +66,15 @@
         "uniform": "cpp",
         "globjectsvisitor": "cpp",
         "intersectionvisitor": "cpp",
-        "renderleaf": "cpp"
+        "renderleaf": "cpp",
+        "cstdarg": "cpp",
+        "forward_list": "cpp",
+        "algorithm": "cpp",
+        "iterator": "cpp",
+        "map": "cpp",
+        "memory_resource": "cpp",
+        "set": "cpp",
+        "string": "cpp",
+        "cinttypes": "cpp"
     }
 }

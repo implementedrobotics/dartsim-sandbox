@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
     viewer.setUpViewInWindow(0,0,1280,1024);
     viewer.getCameraManipulator()->setHomePosition(::osg::Vec3(0.0f, -5.0f, 0.0f),
     ::osg::Vec3(0.0f, 0.0f, 0.0f),
-    ::osg::Vec3(0.0f, 0.0f, 1.0f), false);
+    ::osg::Vec3(0.0f, 0.707f, 0.707f), false);
 
     viewer.setCameraManipulator(viewer.getCameraManipulator());
     std::cout << leg->getBodyNode("base_link")->getWorldTransform().translation() << std::endl;
@@ -185,13 +185,13 @@ int main(int argc, char *argv[])
     //leg->getDof(0)->setSpringStiffness(1000);
 
     leg->getDof(1)->setDampingCoefficient(0.2);
-    leg->getDof(1)->setSpringStiffness(13);
+    leg->getDof(1)->setSpringStiffness(10);
     leg->getDof(1)->setRestPosition(0.5);
 
-    leg->getDof(2)->setDampingCoefficient(100.2);
-    leg->getDof(2)->setSpringStiffness(13);
+    leg->getDof(2)->setDampingCoefficient(0.2);
+    leg->getDof(2)->setSpringStiffness(100);
     leg->getDof(2)->setRestPosition(0.7);
-    leg->getDof(2)->setDampingCoefficient(.1);//Velocity(4);
+    leg->getDof(2)->setDampingCoefficient(0.1);//Velocity(4);
 
     leg->getJoint("kfe_joint")->setPositionLimitEnforced(true);
     leg->getDof("kfe_joint")->setPositionLimits(-1.32, 1.0);
