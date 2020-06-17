@@ -13,6 +13,94 @@ using namespace dart::simulation;
 
 SimpleFramePtr g_hip_target;
 double g_stand_height = 0.4f;
+
+
+
+class FiniteStateMachine
+{
+  class State
+  {
+    public:
+    // Name
+    // State ID
+    // OnEnter
+    // OnExit
+    // Transition
+    // Next State
+  };
+
+
+  public:
+    bool AddState();
+    // Reset
+    // Set Default State
+    // Execute
+
+
+};
+class CubicPolynomialTrajectory
+{
+  public:
+    CubicPolynomialTrajectory(double q_f, double t_f) 
+    : q_0_(0.0), q_f_(q_f), v_0_(0.0), v_f_(0.0), t_0_(0.0), t_f_(t_f)
+    {
+      // Compute Coefficients
+      ComputeCoeffs();
+    }
+    CubicPolynomialTrajectory(double q_0, double q_f, double v_0, double v_f, double t_0, double t_f)
+    : q_0_(q_0), q_f_(q_f), v_0_(v_0), v_f_(v_f), t_0_(t_0), t_f_(t_f)
+    {
+      // Compute Coefficients
+      ComputeCoeffs();
+    }
+
+    // TODO: Check for valid t between 0<->t_f
+    double Position(double t)
+    {
+      return a_(0) + a_(1)*t + a_(2)*t*t + a_(3)*t*t*t;
+    }
+    double Velocity(double t)
+    {
+      return a_(1) + 2*a_(2)*t + 3*a_(3)*t*t;
+    }
+    double Acceleration(double t)
+    {
+      return 2*a_(2) + 6*a_(3)*t;
+    }
+
+
+  protected:
+    void ComputeCoeffs()
+    {
+
+      Eigen::Matrix4d C; // Constraints
+      C << 1, t_0_, t_0_*t_0_, t_0_*t_0_*t_0_,
+      0, 1, 2 * t_0_, 3*t_0_*t_0_,
+      1, t_f_, t_f_*t_f_, t_f_*t_f_*t_f_,
+      0, 1, 2*t_f_, 3*t_f_*t_f_;
+
+      Eigen::Vector4d b; 
+      b << q_0_, v_0_, q_f_, v_f_;
+
+      // Solve for Coefficients
+      a_ = C.lu().solve(b);
+    }
+
+
+
+    Eigen::Vector4d a_; // Coefficients
+    
+    double q_0_;
+    double v_0_;
+    double t_0_;
+    
+    double q_f_;
+    double v_f_;
+    double t_f_;
+
+
+};
+
 class NomadSimWorldNode : public dart::gui::osg::RealTimeWorldNode
 {
 public:
@@ -206,8 +294,14 @@ SkeletonPtr LoadNomad()
     std::cout << test << std::endl;
     return nomad;
 }
+
+
+
 int main(int argc, char *argv[])
 {
+
+  CubicPolynomialTrajectory ct(20,10);
+  return 0;
     // Create dart simulation world
     WorldPtr world = World::create();
 
