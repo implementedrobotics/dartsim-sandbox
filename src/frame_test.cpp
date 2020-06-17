@@ -52,9 +52,9 @@ int main(int argc, char *argv[])
     //world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("KFE_Actuator"), "kfe_link/frame"));
     world->addSimpleFrame(create_interactive_frame(dart::dynamics::Frame::World(), "world/frame"));
     world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("base_link"), "base_link/frame"));
-    world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("Upper_Leg"), "upper_link/frame"));
-    world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("Lower_Leg"), "lower_link/frame"));
-    world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("Foot"), "foot/frame"));
+    world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("upper_Leg"), "upper_link/frame"));
+    world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("lower_Leg"), "lower_link/frame"));
+    world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("foot"), "foot/frame"));
 
     //dart::gui::osg::InteractiveFramePtr frame = std::make_shared<dart::gui::osg::InteractiveFrame>(Frame::World(), "foot", tf);
     //world->addSimpleFrame(frame);
@@ -108,8 +108,8 @@ int main(int argc, char *argv[])
     leg->getDof(0)->setPositionLimits(-0.1,0.1);
     leg->getDof(0)->setForce(1000);
     std::cout << "DOF: " << leg->getDof(1)->getName();
-    auto hip_node = leg->getBodyNode("HFE_Actuator");
-    auto foot_node = leg->getBodyNode("Foot");
+    auto hip_node = leg->getBodyNode("hfe_motor");
+    auto foot_node = leg->getBodyNode("foot");
 
     const Eigen::MatrixXd& J = leg->getJacobian(foot_node, hip_node);
     

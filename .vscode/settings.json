@@ -75,6 +75,7 @@
         "memory_resource": "cpp",
         "set": "cpp",
         "string": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "referenced": "cpp"
     }
 }
