@@ -14,6 +14,9 @@ using namespace dart::simulation;
 SimpleFramePtr g_hip_target;
 double g_stand_height = 0.4f;
 
+// State Crouch
+// State Stand
+// State EStop
 
 
 class FiniteStateMachine
@@ -23,18 +26,33 @@ class FiniteStateMachine
     public:
     // Name
     // State ID
-    // OnEnter
-    // OnExit
-    // Transition
+
     // Next State
+        const std::string& GetName();
+        void Enter();
+        void Exit();
+        void ProcessEvent();
+        bool InTransition();
+        void Run();
+
+    protected:
+        std::string name_;
+        bool in_transition_;
+        State *next_state_;
+
   };
 
 
   public:
     bool AddState();
+    bool Run();
     // Reset
     // Set Default State
     // Execute
+    // Nomad Data Pointer
+
+protected:
+    State *current_state_;
 
 
 };
