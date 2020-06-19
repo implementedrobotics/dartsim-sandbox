@@ -79,11 +79,19 @@ public:
   }
   double Velocity(double t)
   {
-    return a_(1) + 2 * a_(2) * t + 3 * a_(3) * t * t;
+    // Trim Position
+    // TODO: Function for this trimming/mapping
+    double t_eval = std::min(t, t_f_);
+    t_eval = std::max(t_eval, t_0_);
+    return a_(1) + 2 * a_(2) * t_eval + 3 * a_(3) * t_eval * t_eval;
   }
   double Acceleration(double t)
   {
-    return 2 * a_(2) + 6 * a_(3) * t;
+    // Trim Position
+    // TODO: Function for this trimming/mapping
+    double t_eval = std::min(t, t_f_);
+    t_eval = std::max(t_eval, t_0_);
+    return 2 * a_(2) + 6 * a_(3) * t_eval;
   }
 
 protected:
@@ -176,9 +184,11 @@ class LegController
             force_output = force_feedforward_;
             force_output += k_P_cartesian_ * (foot_pos_desired_ - foot_pos_);
             force_output += k_D_cartesian_ * (foot_vel_desired_ - foot_vel_);
+           // std::cout << leg_skeleton_->getGravityForces() << std::endl;
 
             // Convert to Joint Torques
             tau_output += J_.transpose() * force_output;
+
             //std::cout << tau_output << std::endl;
             //max_torque = std::max(max_torque, tau_output[2]);
             //std::cout << max_torque << std::endl;
@@ -200,6 +210,10 @@ class LegController
             //foot_vel_ = foot_body_->getLinearVelocity(hfe_body_, hfe_body_);
         }
 
+        const SkeletonPtr& Skeleton() 
+        {
+          return leg_skeleton_;
+        }
     protected:
         SkeletonPtr leg_skeleton_;  
         BodyNodePtr hfe_body_;
@@ -335,13 +349,26 @@ class StandState : public State
   {
       double time_now = g_world->getTime();
       double h_t = stand_traj_.Position(time_now - start_time_);
+      double a_t = stand_traj_.Acceleration(time_now - start_time_);
 
       //std::cout << "H: " << h_t << "to: " << g_Controller->GetFootPosition()[2] << std::endl;
       Eigen::Vector3d foot_pos_desired = start_pos_;
       foot_pos_desired[2] = h_t;
       
-      g_Controller->SetCartesianPD(Eigen::Vector3d(3000,3000,3000), Eigen::Vector3d(200,200,200));
+      g_Controller->SetCartesianPD(Eigen::Vector3d(125,125,125), Eigen::Vector3d(50,50,50));
       g_Controller->SetFootStateDesired(foot_pos_desired, Eigen::Vector3d::Zero());
+
+      // F = ma
+      Eigen::Vector3d force_ff = g_Controller->Skeleton()->getMass() * Eigen::Vector3d(0,0,-9.81);
+      if(time_now - start_time_ <= 1.0)
+      {
+      //std::cout << g_Controller->Skeleton()->getMass() << " : " << std::endl;
+      force_ff += g_Controller->Skeleton()->getMass() * Eigen::Vector3d(0,0,-a_t);
+
+      }
+      g_Controller->SetForceFeedForward(force_ff);
+
+      
   }
   void Enter() 
   { 
@@ -349,8 +376,8 @@ class StandState : public State
     // Cache Current Position
     start_pos_ = g_Controller->GetFootPosition();
     // Compute Trajectory from Initial Foot to Stand Height
-    double stand_height = .35;
-    stand_traj_.Generate(start_pos_[2], -stand_height, 0.0, 0.0, 0.0, 0.5);
+    double stand_height = .41;
+    stand_traj_.Generate(start_pos_[2], -stand_height, 0.0, 0.0, 0.0, 1.0);
     start_time_ = g_world->getTime();
   }
   bool Transition(State *pNextState)
@@ -813,8 +840,8 @@ int main(int argc, char *argv[])
 
   //world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("HFE_Actuator"), "hfe_link/frame"));
   //world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("KFE_Actuator"), "kfe_link/frame"));
-  g_world->addSimpleFrame(create_interactive_frame(dart::dynamics::Frame::World(), "world/frame"));
-  g_world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("base_link"), "base_link/frame"));
+  //g_world->addSimpleFrame(create_interactive_frame(dart::dynamics::Frame::World(), "world/frame"));
+  //g_world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("base_link"), "base_link/frame"));
   //world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("upper_Leg"), "upper_link/frame"));
   //world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("lower_Leg"), "lower_link/frame"));
 
