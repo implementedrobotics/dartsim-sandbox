@@ -14,7 +14,9 @@ using namespace dart::simulation;
 int main(int argc, char *argv[])
 {
     dart::utils::DartLoader loader;
-    std::string urdf = "/home/nomad/dev/dartsim-sandbox/resource/Nomad/Nomad_leg_test.urdf";
+    std::string urdf = std::getenv("NOMAD_RESOURCE_PATH");
+    urdf.append("/NomadFull/Nomad.urdf");
+   // std::string urdf = "/home/nomad/dev/dartsim-sandbox/resource/NomadFull/Nomad.urdf";
     SkeletonPtr leg = loader.parseSkeleton(urdf);
     std::cout << "LOADED!" << std::endl;
 
@@ -33,24 +35,25 @@ int main(int argc, char *argv[])
 
     viewer.setCameraManipulator(viewer.getCameraManipulator());
     std::cout << leg->getBodyNode("base_link")->getWorldTransform().translation();
-    std::cout << leg->getDof(0)->getName() << std::endl;
-    std::cout << leg->getDof(1)->getName() << std::endl;
+    std::cout << leg->getDof(7)->getName() << std::endl;
+    std::cout << leg->getDof(8)->getName() << std::endl;
     //std::cout << leg->getDof(2)->getName() << std::endl;
     //std::cout << leg->getDof(3)->getName() << std::endl;
     //std::cout << leg->getDof(0)->getName() << std::endl;
     //std::cout << leg->getDof(0)->getName() << std::endl;
-    leg->getDof(0)->setPosition(1.5);
-    leg->getDof(0)->setRestPosition(0);
-    leg->getDof(0)->setDampingCoefficient(0.2);
-    leg->getDof(1)->setDampingCoefficient(.1);//Velocity(4);
+    //leg->getDof(7)->setPosition(1.5);
+    //leg->getDof(8)->setPosition(1.5);
+    //leg->getDof(0)->setRestPosition(0);
+    //leg->getDof(0)->setDampingCoefficient(0.2);
+    //leg->getDof(1)->setDampingCoefficient(.1);//Velocity(4);
 
-    auto hip_node = leg->getBodyNode("HFE_Actuator1");
-    auto foot_node = leg->getBodyNode("Foot1");
+   // auto hip_node = leg->getBodyNode("HFE_Actuator1");
+   // auto foot_node = leg->getBodyNode("Foot1");
 
-    const Eigen::MatrixXd& J = leg->getJacobian(foot_node, hip_node);
+   // const Eigen::MatrixXd& J = leg->getJacobian(foot_node, hip_node);
     
 
-    std::cout << J << std::endl;
+   // std::cout << J << std::endl;
     viewer.run();
     return 0;
 }
