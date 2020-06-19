@@ -17,6 +17,102 @@ SimpleFramePtr g_hip_target;
 double g_stand_height = 0.4f;
 
 
+
+
+class LegController
+{
+    public:
+        LegController(SkeletonPtr legSkeleton) : leg_skeleton_(legSkeleton)
+        {
+            Reset();
+            hfe_body_ = leg_skeleton_->getBodyNode("hfe_motor");
+            foot_body_ = leg_skeleton_->getBodyNode("foot");
+        }
+        void Reset()
+        {
+            k_P_cartesian_ = k_D_cartesian_ = 0.0;
+            k_P_joint_ = k_D_joint_ = 0.0;
+
+            foot_pos_desired_ = foot_vel_desired_ = Eigen::Vector3d::Zero();
+
+            memset(&q_desired_, 0, sizeof(q_desired_));
+            memset(&qd_desired_, 0, sizeof(qd_desired_));
+            memset(&tau_feedforward_, 0, sizeof(tau_feedforward_));
+
+            force_feedforward_ = Eigen::Vector3d::Zero();;
+        }
+
+        void SetCartesianPD(double k_P, double k_D)
+        {
+            k_P_cartesian_ = k_P;
+            k_D_cartesian_ = k_D;
+        }
+
+        void SetJointPD(double k_P, double k_D)
+        {
+            k_P_joint_ = k_P;
+            k_D_joint_ = k_D;
+        }
+
+        void SetFootStateDesired(const Eigen::Vector3d &posDesired, const Eigen::Vector3d &velDesired)
+        {
+            foot_pos_desired_ = posDesired;
+            foot_vel_desired_ = velDesired;
+        }
+
+        void Run()
+        {
+            // Compute Feed Forwards
+            Eigen::Vector3d tau_output;
+            Eigen::Vector3d force_output;
+
+            tau_output = tau_feedforward_;
+            force_output = force_feedforward_;
+            force_output += k_P_cartesian_ * (foot_pos_desired_ - foot_pos_);
+            force_output += k_D_cartesian_ * (foot_vel_desired_ - foot_vel_);
+
+            tau_output += J_.transpose() * force_output;
+            leg_skeleton_->setForces(tau_output);
+        }
+
+        void UpdateState()
+        {
+            // Compute Jacobian
+            J_ = leg_skeleton_->getJacobian(foot_body_, hfe_body_);
+
+            foot_pos_ = foot_body_->getTransform(hfe_body_).translation();
+            foot_vel_ = J_ * leg_skeleton_->getVelocities();
+            //foot_vel_ = foot_body_->getLinearVelocity(hfe_body_, hfe_body_);
+        }
+
+    protected:
+        SkeletonPtr leg_skeleton_;  
+        BodyNodePtr hfe_body_;
+        BodyNodePtr foot_body_;
+
+        double k_P_joint_;
+        double k_D_joint_;
+        double k_P_cartesian_;
+        double k_D_cartesian_;
+
+        Eigen::Vector3d foot_pos_desired_;
+        Eigen::Vector3d foot_vel_desired_;
+
+        Eigen::Vector3d foot_pos_;
+        Eigen::Vector3d foot_vel_;
+        
+        Eigen::Vector3d q_desired_; // 3Dof Leg
+        Eigen::Vector3d qd_desired_; // 3Dof Leg
+
+        Eigen::Vector3d q_;
+        Eigen::Vector3d qd_;
+
+        Eigen::Vector3d force_feedforward_;
+        Eigen::Vector3d tau_feedforward_;
+
+        Eigen::MatrixXd J_; // Leg Jacobian
+};
+
 class FiniteStateMachine;
 
 FiniteStateMachine *g_FSM;
