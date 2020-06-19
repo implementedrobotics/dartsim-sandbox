@@ -14,15 +14,110 @@ using namespace dart::dynamics;
 using namespace dart::simulation;
 
 SimpleFramePtr g_hip_target;
+WorldPtr g_world;
 double g_stand_height = 0.4f;
 
 
+double max_torque = 0.0;
 
+
+class CubicPolynomialTrajectory
+{
+public:
+  CubicPolynomialTrajectory(double q_f, double t_f)
+      : q_0_(0.0), q_f_(q_f), v_0_(0.0), v_f_(0.0), t_0_(0.0), t_f_(t_f)
+  {
+    // Compute Coefficients
+    ComputeCoeffs();
+  }
+  CubicPolynomialTrajectory(double q_0, double q_f, double v_0, double v_f, double t_0, double t_f)
+      : q_0_(q_0), q_f_(q_f), v_0_(v_0), v_f_(v_f), t_0_(t_0), t_f_(t_f)
+  {
+    // Compute Coefficients
+    ComputeCoeffs();
+  }
+
+  CubicPolynomialTrajectory() // Empty Trajectory
+      : q_0_(0.0), q_f_(0.0), v_0_(0.0), v_f_(0.0), t_0_(0.0), t_f_(0.0)
+  {
+    // Compute Coefficients
+    ComputeCoeffs();
+  }
+
+  void Generate(double q_f, double t_f)
+  {
+    q_0_ = 0.0;
+    q_f_ = q_f;
+    v_0_ = 0.0;
+    v_f_ = 0.0;
+    t_0_ = 0.0;
+    t_f_ = t_f;
+
+    ComputeCoeffs();
+  }
+
+  void Generate(double q_0, double q_f, double v_0, double v_f, double t_0, double t_f)
+  {
+    q_0_ = q_0;
+    q_f_ = q_f;
+    v_0_ = v_0;
+    v_f_ = v_f;
+    t_0_ = t_0;
+    t_f_ = t_f;
+
+    ComputeCoeffs();
+  }
+
+  // TODO: Check for valid t between 0<->t_f
+  double Position(double t)
+  {
+    // Trim Position
+    // TODO: Function for this trimming/mapping
+    double t_eval = std::min(t, t_f_);
+    t_eval = std::max(t_eval, t_0_);
+    return a_(0) + a_(1) * t_eval + a_(2) * t_eval * t_eval + a_(3) * t_eval * t_eval * t_eval;
+  }
+  double Velocity(double t)
+  {
+    return a_(1) + 2 * a_(2) * t + 3 * a_(3) * t * t;
+  }
+  double Acceleration(double t)
+  {
+    return 2 * a_(2) + 6 * a_(3) * t;
+  }
+
+protected:
+  void ComputeCoeffs()
+  {
+
+    Eigen::Matrix4d C; // Constraints
+    C << 1, t_0_, t_0_ * t_0_, t_0_ * t_0_ * t_0_,
+        0, 1, 2 * t_0_, 3 * t_0_ * t_0_,
+        1, t_f_, t_f_ * t_f_, t_f_ * t_f_ * t_f_,
+        0, 1, 2 * t_f_, 3 * t_f_ * t_f_;
+
+    Eigen::Vector4d b;
+    b << q_0_, v_0_, q_f_, v_f_;
+
+    // Solve for Coefficients
+    a_ = C.lu().solve(b);
+  }
+
+  Eigen::Vector4d a_; // Coefficients
+
+  double q_0_;
+  double v_0_;
+  double t_0_;
+
+  double q_f_;
+  double v_f_;
+  double t_f_;
+};
 
 class LegController
 {
     public:
-        LegController(SkeletonPtr legSkeleton) : leg_skeleton_(legSkeleton)
+        LegController(SkeletonPtr &legSkeleton) : leg_skeleton_(legSkeleton)
         {
             Reset();
             hfe_body_ = leg_skeleton_->getBodyNode("hfe_motor");
@@ -30,28 +125,32 @@ class LegController
         }
         void Reset()
         {
-            k_P_cartesian_ = k_D_cartesian_ = 0.0;
-            k_P_joint_ = k_D_joint_ = 0.0;
+            k_P_cartesian_ = Eigen::Matrix3d::Zero();
+            k_D_cartesian_ = Eigen::Matrix3d::Zero();
 
-            foot_pos_desired_ = foot_vel_desired_ = Eigen::Vector3d::Zero();
+            k_P_joint_ = Eigen::Matrix3d::Zero();
+            k_D_joint_ = Eigen::Matrix3d::Zero();
 
-            memset(&q_desired_, 0, sizeof(q_desired_));
-            memset(&qd_desired_, 0, sizeof(qd_desired_));
-            memset(&tau_feedforward_, 0, sizeof(tau_feedforward_));
+            foot_pos_desired_ = Eigen::Vector3d::Zero();
+            foot_vel_desired_ = Eigen::Vector3d::Zero();
 
-            force_feedforward_ = Eigen::Vector3d::Zero();;
+            q_desired_ = Eigen::Vector3d::Zero();
+            qd_desired_ = Eigen::Vector3d::Zero();
+            tau_feedforward_ = Eigen::Vector3d::Zero();
+
+            force_feedforward_ = Eigen::Vector3d::Zero();
         }
 
-        void SetCartesianPD(double k_P, double k_D)
+        void SetCartesianPD(const Eigen::Vector3d& k_P, const Eigen::Vector3d& k_D)
         {
-            k_P_cartesian_ = k_P;
-            k_D_cartesian_ = k_D;
+            k_P_cartesian_ = k_P.asDiagonal();
+            k_D_cartesian_ = k_D.asDiagonal();
         }
 
-        void SetJointPD(double k_P, double k_D)
+        void SetJointPD(const Eigen::Vector3d& k_P, const Eigen::Vector3d& k_D)
         {
-            k_P_joint_ = k_P;
-            k_D_joint_ = k_D;
+            k_P_joint_ = k_P.asDiagonal();
+            k_D_joint_ = k_D.asDiagonal();
         }
 
         void SetFootStateDesired(const Eigen::Vector3d &posDesired, const Eigen::Vector3d &velDesired)
@@ -59,7 +158,14 @@ class LegController
             foot_pos_desired_ = posDesired;
             foot_vel_desired_ = velDesired;
         }
-
+        void SetForceFeedForward(const Eigen::Vector3d &force)
+        {
+            force_feedforward_ = force;
+        }
+        const Eigen::Vector3d& GetFootPosition()
+        {
+          return foot_pos_;
+        }
         void Run()
         {
             // Compute Feed Forwards
@@ -71,17 +177,26 @@ class LegController
             force_output += k_P_cartesian_ * (foot_pos_desired_ - foot_pos_);
             force_output += k_D_cartesian_ * (foot_vel_desired_ - foot_vel_);
 
+            // Convert to Joint Torques
             tau_output += J_.transpose() * force_output;
+            //std::cout << tau_output << std::endl;
+            //max_torque = std::max(max_torque, tau_output[2]);
+            //std::cout << max_torque << std::endl;
+            // Technically sets a force on the unactuated joint = 0.  Just be aware. I think we are just lucky it happens
+            // to match 3dof even though this leg setup is 2dof
             leg_skeleton_->setForces(tau_output);
         }
 
         void UpdateState()
         {
-            // Compute Jacobian
-            J_ = leg_skeleton_->getJacobian(foot_body_, hfe_body_);
+            // Compute Jacobian (Linear)  TODO: Do we want the full Jacobian with angular velocities?
+            J_ = leg_skeleton_->getLinearJacobian(foot_body_, hfe_body_);
 
             foot_pos_ = foot_body_->getTransform(hfe_body_).translation();
             foot_vel_ = J_ * leg_skeleton_->getVelocities();
+
+            // This is the same, but like using the jacobian better as it is more generic
+            // TODO: See if linearvelocity is faster/cached for some reason
             //foot_vel_ = foot_body_->getLinearVelocity(hfe_body_, hfe_body_);
         }
 
@@ -90,10 +205,10 @@ class LegController
         BodyNodePtr hfe_body_;
         BodyNodePtr foot_body_;
 
-        double k_P_joint_;
-        double k_D_joint_;
-        double k_P_cartesian_;
-        double k_D_cartesian_;
+        Eigen::Matrix3d  k_P_joint_;
+        Eigen::Matrix3d  k_D_joint_;
+        Eigen::Matrix3d  k_P_cartesian_;
+        Eigen::Matrix3d  k_D_cartesian_;
 
         Eigen::Vector3d foot_pos_desired_;
         Eigen::Vector3d foot_vel_desired_;
@@ -113,13 +228,16 @@ class LegController
         Eigen::MatrixXd J_; // Leg Jacobian
 };
 
+LegController *g_Controller;
+
 class FiniteStateMachine;
 
 FiniteStateMachine *g_FSM;
 typedef enum {
   STATE_CROUCH = 1,
   STATE_STAND = 2,
-  STATE_ESTOP = 3
+  STATE_IDLE = 3,
+  STATE_ESTOP = 4
 } ControllerState;
 
 class State
@@ -158,8 +276,32 @@ class CrouchState : public State
   {
 
   }
-  void Run() {}//std::cout << "RUNNING CROUCH" << std::endl;}
-  void Enter() { next_state_ = this; }
+  void Run() 
+  {
+      double time_now = g_world->getTime();
+      double h_t = crouch_traj_.Position(time_now - start_time_);
+
+      //std::cout << "H: " << h_t << "to: " << g_Controller->GetFootPosition()[2] << std::endl;
+      Eigen::Vector3d foot_pos_desired = start_pos_;
+      foot_pos_desired[2] = h_t;
+      
+      g_Controller->SetCartesianPD(Eigen::Vector3d(3000,3000,3000), Eigen::Vector3d(200,200,200));
+      g_Controller->SetFootStateDesired(foot_pos_desired, Eigen::Vector3d::Zero());
+  }
+  void Enter()
+   { 
+    next_state_ = this;
+
+    // Cache Current Position
+    start_pos_ = g_Controller->GetFootPosition();
+
+    std::cout << "POS!: "<< start_pos_ << std::endl;
+    // Compute Trajectory from Initial Foot to Stand Height
+    double crouch_height = 0.1;
+    crouch_traj_.Generate(start_pos_[2], -crouch_height, 0.0, 0.0, 0.0, 0.5);
+    start_time_ = g_world->getTime();
+
+    }
   bool Transition(State *pNextState)
   {
     switch (pNextState->Id())
@@ -175,6 +317,11 @@ class CrouchState : public State
       std::cout << "Invalid State Transition." << std::endl;
     }
   }
+
+  protected:
+    CubicPolynomialTrajectory crouch_traj_;
+    double start_time_;
+    Eigen::Vector3d start_pos_;
 };
 
 class StandState : public State
@@ -184,19 +331,27 @@ class StandState : public State
   {
 
   }
-  void Run() {}//std::cout << "RUNNING STAND" << std::endl;}
-  void Enter() { next_state_ = this; 
-  // Compute Trajectory from Initial Foot to Stand Height
-  // Param = Time to traverse
-  // Need LegController -> Reference to Hip
-  // Keep the state and the targets
-  // Make Function for Cartesian PD vs Joint PD
-  // Need Some Time Sync from Sim (mWorldPtr)
-  // Set PD Gains(Cartesian, Joint)
-  // Set Joint Targets(q, qdd)
-  // Set Foot Targets(p, v)
-  // Set Force Feed Forward
-  // Set Torque/Tau Feed Forward
+  void Run()
+  {
+      double time_now = g_world->getTime();
+      double h_t = stand_traj_.Position(time_now - start_time_);
+
+      //std::cout << "H: " << h_t << "to: " << g_Controller->GetFootPosition()[2] << std::endl;
+      Eigen::Vector3d foot_pos_desired = start_pos_;
+      foot_pos_desired[2] = h_t;
+      
+      g_Controller->SetCartesianPD(Eigen::Vector3d(3000,3000,3000), Eigen::Vector3d(200,200,200));
+      g_Controller->SetFootStateDesired(foot_pos_desired, Eigen::Vector3d::Zero());
+  }
+  void Enter() 
+  { 
+    next_state_ = this; 
+    // Cache Current Position
+    start_pos_ = g_Controller->GetFootPosition();
+    // Compute Trajectory from Initial Foot to Stand Height
+    double stand_height = .35;
+    stand_traj_.Generate(start_pos_[2], -stand_height, 0.0, 0.0, 0.0, 0.5);
+    start_time_ = g_world->getTime();
   }
   bool Transition(State *pNextState)
   {
@@ -207,6 +362,41 @@ class StandState : public State
       break;
     case ControllerState::STATE_CROUCH:
       std::cout << "Transition from Stand to Crouch VALID" << std::endl;
+      next_state_ = pNextState;
+      break;
+    default:
+      std::cout << "Invalid State Transition." << std::endl;
+    }
+  }
+  protected:
+    CubicPolynomialTrajectory stand_traj_;
+    double start_time_;
+    Eigen::Vector3d start_pos_;
+};
+
+class IdleState : public State
+{
+  public:
+  IdleState() : State("IDLE", ControllerState::STATE_IDLE)
+  {
+
+  }
+  void Run()
+  {
+  }
+  void Enter() 
+  { 
+    std::cout << "In Idle State" << std::endl;
+  }
+  bool Transition(State *pNextState)
+  {
+    switch (pNextState->Id())
+    {
+    // case ControllerState::STATE_CROUCH:
+    //   std::cout << "Transition from Stand to Stand VALID" << std::endl;
+    //   break;
+    case ControllerState::STATE_STAND:
+      std::cout << "Transition from Idle to Stand VALID" << std::endl;
       next_state_ = pNextState;
       break;
     default:
@@ -311,63 +501,6 @@ protected:
   std::map<ControllerState, State* > state_list_;
 };
 
-class CubicPolynomialTrajectory
-{
-public:
-  CubicPolynomialTrajectory(double q_f, double t_f)
-      : q_0_(0.0), q_f_(q_f), v_0_(0.0), v_f_(0.0), t_0_(0.0), t_f_(t_f)
-  {
-    // Compute Coefficients
-    ComputeCoeffs();
-  }
-  CubicPolynomialTrajectory(double q_0, double q_f, double v_0, double v_f, double t_0, double t_f)
-      : q_0_(q_0), q_f_(q_f), v_0_(v_0), v_f_(v_f), t_0_(t_0), t_f_(t_f)
-  {
-    // Compute Coefficients
-    ComputeCoeffs();
-  }
-
-  // TODO: Check for valid t between 0<->t_f
-  double Position(double t)
-  {
-    return a_(0) + a_(1) * t + a_(2) * t * t + a_(3) * t * t * t;
-  }
-  double Velocity(double t)
-  {
-    return a_(1) + 2 * a_(2) * t + 3 * a_(3) * t * t;
-  }
-  double Acceleration(double t)
-  {
-    return 2 * a_(2) + 6 * a_(3) * t;
-  }
-
-protected:
-  void ComputeCoeffs()
-  {
-
-    Eigen::Matrix4d C; // Constraints
-    C << 1, t_0_, t_0_ * t_0_, t_0_ * t_0_ * t_0_,
-        0, 1, 2 * t_0_, 3 * t_0_ * t_0_,
-        1, t_f_, t_f_ * t_f_, t_f_ * t_f_ * t_f_,
-        0, 1, 2 * t_f_, 3 * t_f_ * t_f_;
-
-    Eigen::Vector4d b;
-    b << q_0_, v_0_, q_f_, v_f_;
-
-    // Solve for Coefficients
-    a_ = C.lu().solve(b);
-  }
-
-  Eigen::Vector4d a_; // Coefficients
-
-  double q_0_;
-  double v_0_;
-  double t_0_;
-
-  double q_f_;
-  double v_f_;
-  double t_f_;
-};
 
 class NomadSimWorldNode : public dart::gui::osg::RealTimeWorldNode
 {
@@ -384,6 +517,8 @@ public:
     g_hip_target->setShape(ball);
     g_hip_target->getVisualAspect(true)->setColor(Eigen::Vector3d(0.9, 0, 0));
     world->addSimpleFrame(g_hip_target);
+
+    step_iter = 0;
   }
 
   void customPreStep()
@@ -391,15 +526,26 @@ public:
     // Use this function to execute custom code before each simulation time
     // step is performed. This function can be deleted if it does not need
     // to be used.
-    //std::cout << "Hello" << std::endl;
     // leg->getDof(2)->setForce(20.3);
 
     // std::cout << leg->getJoint("leg_to_world")->getPosition(0) << std::endl;
 
+    if(step_iter < 5)
+      return; 
+
+    // Setup
+    // Reset Command
+    g_Controller->Reset();
+
     // Run State Machine
     g_FSM->Run();
 
+    //g_Controller->SetForceFeedForward(Eigen::Vector3d(0,0,-88));
+
     // Run LegController
+    g_Controller->Run();
+
+    // Post Setup
 
   }
 
@@ -408,11 +554,15 @@ public:
     // Use this function to execute custom code after each simulation time
     // step is performed. This function can be deleted if it does not need
     // to be used.
+    g_Controller->UpdateState();
+    
+    step_iter++;
   }
 
 protected:
   SkeletonPtr nomad_;
   SimpleFramePtr hip_target_;
+  int step_iter;
 };
 
 class NomadInputHandler : public ::osgGA::GUIEventHandler
@@ -473,6 +623,11 @@ public:
           std::cout << "Got Crouch Request" << std::endl;
           g_FSM->TransitionTo(ControllerState::STATE_CROUCH);
       }
+      else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_E)
+      {
+        nomad_->getBodyNode("hfe_motor")->addExtForce(Eigen::Vector3d(0,0,-5000), Eigen::Vector3d::Zero(), true, true);
+        //std::cout << "FORCE" << std::endl;
+      }
     }
   }
 
@@ -491,14 +646,14 @@ public:
     nomad_->getDof("kfe_joint")->setPosition(-1.3);
 
     // Joint PD Params
-    nomad_->getDof("hfe_joint")->setDampingCoefficient(0.2);
-    nomad_->getDof("hfe_joint")->setSpringStiffness(10);
-    nomad_->getDof("hfe_joint")->setRestPosition(0.5);
+    //nomad_->getDof("hfe_joint")->setDampingCoefficient(0.2);
+    //nomad_->getDof("hfe_joint")->setSpringStiffness(10);
+    //nomad_->getDof("hfe_joint")->setRestPosition(0.5);
 
     // Joint PD Params
-    nomad_->getDof("kfe_joint")->setSpringStiffness(100);
-    nomad_->getDof("kfe_joint")->setRestPosition(0.7);
-    nomad_->getDof("kfe_joint")->setDampingCoefficient(0.1); //Velocity(4);
+    //nomad_->getDof("kfe_joint")->setSpringStiffness(100);
+    //nomad_->getDof("kfe_joint")->setRestPosition(0.7);
+    //nomad_->getDof("kfe_joint")->setDampingCoefficient(0.1); //Velocity(4);
   }
 
 protected:
@@ -544,6 +699,9 @@ SkeletonPtr CreateGround()
   tf.translation() = Eigen::Vector3d(0, 0, -thickness / 2.0);
   body->getParentJoint()->setTransformFromParentBodyNode(tf);
 
+  //shapeNode->getDynamicsAspect()->setFrictionCoeff(10.0);
+  //std::cout << "Mu: " << shapeNode->getDynamicsAspect()->getFrictionCoeff() << std::endl;
+
   return ground;
 }
 SkeletonPtr LoadNomad()
@@ -564,16 +722,18 @@ SkeletonPtr LoadNomad()
   nomad->getDof("kfe_joint")->setPosition(-1.3);
 
   // Joint PD Params
-  nomad->getDof("hfe_joint")->setDampingCoefficient(0.2);
-  nomad->getDof("hfe_joint")->setSpringStiffness(10);
-  nomad->getDof("hfe_joint")->setRestPosition(0.5);
+  //nomad->getDof("hfe_joint")->setDampingCoefficient(0.2);
+  //nomad->getDof("hfe_joint")->setSpringStiffness(10);
+  //nomad->getDof("hfe_joint")->setRestPosition(0.5);
 
   // Joint PD Params
-  nomad->getDof("kfe_joint")->setSpringStiffness(100);
-  nomad->getDof("kfe_joint")->setRestPosition(0.7);
-  nomad->getDof("kfe_joint")->setDampingCoefficient(0.1);
+  //nomad->getDof("kfe_joint")->setSpringStiffness(100);
+  //nomad->getDof("kfe_joint")->setRestPosition(0.7);
+  //nomad->getDof("kfe_joint")->setDampingCoefficient(0.1);
 
- // Eigen::Vector3d test = nomad->getBodyNode("foot")->getWorldTransform() * Eigen::Vector3d(-10, 0, 0);
+  // Set Friction
+  //std::cout << nomad->getBodyNode("foot")->getFrictionCoeff() << std::endl;
+  //nomad->getBodyNode("foot")->setFrictionCoeff(10.8);
 
  // std::cout << test << std::endl;
   return nomad;
@@ -582,33 +742,41 @@ SkeletonPtr LoadNomad()
 int main(int argc, char *argv[])
 {
 
+
+  CubicPolynomialTrajectory ct(20, 10);
+  //return 0;
+  // Create dart simulation world
+  g_world = World::create();
+
+  // Update Gravity vector to Z down
+  Eigen::Vector3d gravity(0.0, 0.0, -9.81);
+  g_world->setGravity(gravity);
+
+  // Create and add ground to world
+  SkeletonPtr ground = CreateGround();
+  g_world->addSkeleton(ground);
+
+  // Create and add Nomad test robot to world
+  SkeletonPtr nomad = LoadNomad();
+  g_world->addSkeleton(nomad);
+
+  // Add Controller
+  g_Controller = new LegController(nomad);
+  g_Controller->Reset();
+
   g_FSM = new FiniteStateMachine("Control FSM");
 
   // TODO: This will be in constructor of subclasses FSM
   g_FSM->AddState(new CrouchState());
   g_FSM->AddState(new StandState());
-  g_FSM->SetDefaultState(ControllerState::STATE_CROUCH);
+  g_FSM->AddState(new IdleState());
+  g_FSM->SetDefaultState(ControllerState::STATE_IDLE);
   g_FSM->Reset();
   
-  CubicPolynomialTrajectory ct(20, 10);
-  //return 0;
-  // Create dart simulation world
-  WorldPtr world = World::create();
-
-  // Update Gravity vector to Z down
-  Eigen::Vector3d gravity(0.0, 0.0, -9.81);
-  world->setGravity(gravity);
-
-  // Create and add ground to world
-  SkeletonPtr ground = CreateGround();
-  world->addSkeleton(ground);
-
-  // Create and add Nomad test robot to world
-  SkeletonPtr nomad = LoadNomad();
-  world->addSkeleton(nomad);
+  
 
   // Create osg world node
-  ::osg::ref_ptr<NomadSimWorldNode> node = new NomadSimWorldNode(world, nomad);
+  ::osg::ref_ptr<NomadSimWorldNode> node = new NomadSimWorldNode(g_world, nomad);
 
   // Create osg Viewer
   dart::gui::osg::Viewer viewer = dart::gui::osg::Viewer();
@@ -645,8 +813,8 @@ int main(int argc, char *argv[])
 
   //world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("HFE_Actuator"), "hfe_link/frame"));
   //world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("KFE_Actuator"), "kfe_link/frame"));
-  world->addSimpleFrame(create_interactive_frame(dart::dynamics::Frame::World(), "world/frame"));
-  world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("base_link"), "base_link/frame"));
+  g_world->addSimpleFrame(create_interactive_frame(dart::dynamics::Frame::World(), "world/frame"));
+  g_world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("base_link"), "base_link/frame"));
   //world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("upper_Leg"), "upper_link/frame"));
   //world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("lower_Leg"), "lower_link/frame"));
 

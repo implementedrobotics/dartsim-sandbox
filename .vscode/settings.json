@@ -77,6 +77,7 @@
         "string": "cpp",
         "cinttypes": "cpp",
         "referenced": "cpp",
-        "guieventadapter": "cpp"
+        "guieventadapter": "cpp",
+        "eventqueue": "cpp"
     }
 }
