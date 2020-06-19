@@ -46,6 +46,7 @@ public:
 
   State *NextState() { return next_state_; } // Next State to transition to
   // TODO: Valid state transition?
+
 protected:
   std::string name_;           // State Name
   ControllerState id_;         // State ID
@@ -61,7 +62,7 @@ class CrouchState : public State
   {
 
   }
-  void Run() {std::cout << "RUNNING CROUCH" << std::endl;}
+  void Run() {}//std::cout << "RUNNING CROUCH" << std::endl;}
   void Enter() { next_state_ = this; }
   bool Transition(State *pNextState)
   {
@@ -87,8 +88,20 @@ class StandState : public State
   {
 
   }
-  void Run() {std::cout << "RUNNING STAND" << std::endl;}
-  void Enter() { next_state_ = this; }
+  void Run() {}//std::cout << "RUNNING STAND" << std::endl;}
+  void Enter() { next_state_ = this; 
+  // Compute Trajectory from Initial Foot to Stand Height
+  // Param = Time to traverse
+  // Need LegController -> Reference to Hip
+  // Keep the state and the targets
+  // Make Function for Cartesian PD vs Joint PD
+  // Need Some Time Sync from Sim (mWorldPtr)
+  // Set PD Gains(Cartesian, Joint)
+  // Set Joint Targets(q, qdd)
+  // Set Foot Targets(p, v)
+  // Set Force Feed Forward
+  // Set Torque/Tau Feed Forward
+  }
   bool Transition(State *pNextState)
   {
     switch (pNextState->Id())
@@ -174,15 +187,16 @@ public:
       current_state_->Exit(); // Run State Exit Code
       current_state_ = current_state_->NextState();
       current_state_->Enter(); // Run State Entry Code
+      std::cout << "Successfully Transitioned to State: " << current_state_->Name() << std::endl;
     }
     else // Execute Normally
     {
       current_state_->Run();
     }
   }
-  void TransitionTest()
+  void TransitionTo(ControllerState state)
   {
-    current_state_->Transition(FindState(ControllerState::STATE_STAND));
+    current_state_->Transition(FindState(state));
   }
 
   State* FindState(ControllerState eStateId)
@@ -285,6 +299,12 @@ public:
     // leg->getDof(2)->setForce(20.3);
 
     // std::cout << leg->getJoint("leg_to_world")->getPosition(0) << std::endl;
+
+    // Run State Machine
+    g_FSM->Run();
+
+    // Run LegController
+
   }
 
   void customPostStep()
@@ -327,10 +347,10 @@ public:
         hipOffset = hipOffset + Eigen::Vector3d(0, 0, 0.01);
         g_hip_target->setTranslation(hipOffset);
 
-        std::cout << g_hip_target->getWorldTransform().translation() << std::endl;
+      //  std::cout << g_hip_target->getWorldTransform().translation() << std::endl;
 
-        std::cout << g_hip_target->getTransform(nomad_->getBodyNode("base_link")).translation() << std::endl;
-        std::cout << "Done " << std::endl;
+      //  std::cout << g_hip_target->getTransform(nomad_->getBodyNode("base_link")).translation() << std::endl;
+      //  std::cout << "Done " << std::endl;
       }
       else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_Down)
       {
@@ -340,12 +360,22 @@ public:
         hipOffset = hipOffset + Eigen::Vector3d(0, 0, -0.01);
 
         g_hip_target->setTranslation(hipOffset);
-        std::cout << g_hip_target->getWorldTransform().translation() << std::endl;
+        //std::cout << g_hip_target->getWorldTransform().translation() << std::endl;
       }
       else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_R)
       {
         std::cout << "Reset" << std::endl;
         Reset();
+      }
+      else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_S)
+      {
+          std::cout << "Got Stand Request" << std::endl;
+          g_FSM->TransitionTo(ControllerState::STATE_STAND);
+      }
+      else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_C)
+      {
+          std::cout << "Got Crouch Request" << std::endl;
+          g_FSM->TransitionTo(ControllerState::STATE_CROUCH);
       }
     }
   }
@@ -447,9 +477,9 @@ SkeletonPtr LoadNomad()
   nomad->getDof("kfe_joint")->setRestPosition(0.7);
   nomad->getDof("kfe_joint")->setDampingCoefficient(0.1);
 
-  Eigen::Vector3d test = nomad->getBodyNode("foot")->getWorldTransform() * Eigen::Vector3d(-10, 0, 0);
+ // Eigen::Vector3d test = nomad->getBodyNode("foot")->getWorldTransform() * Eigen::Vector3d(-10, 0, 0);
 
-  std::cout << test << std::endl;
+ // std::cout << test << std::endl;
   return nomad;
 }
 
@@ -463,17 +493,9 @@ int main(int argc, char *argv[])
   g_FSM->AddState(new StandState());
   g_FSM->SetDefaultState(ControllerState::STATE_CROUCH);
   g_FSM->Reset();
-
-  for(int i = 0; i < 10;i++)
-  {
-    if(i == 4)
-      g_FSM->TransitionTest();
-    g_FSM->Run();
-
-  }
   
   CubicPolynomialTrajectory ct(20, 10);
-  return 0;
+  //return 0;
   // Create dart simulation world
   WorldPtr world = World::create();
 
