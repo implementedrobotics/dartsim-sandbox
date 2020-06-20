@@ -5,11 +5,19 @@
   <color rgba="0.700 0.700 0.700 1.000"/>
 </material>
 
+<material name="orange">
+  <color rgba="1.000 0.2706 0.000 1.000"/>
+</material>
+
+<material name="black">
+  <color rgba="0.100 0.100 0.100 1.000"/>
+</material>
+
 <link name="base_link">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.22000000000000136 6.474201759937558e-16 -1.4511141875722118e-16"/>
+    <origin rpy="0 0 0" xyz="1.3855583347321954e-15 6.651837443877584e-16 -1.2179673524009297e-16"/>
     <mass value="2.199913990617033"/>
-    <inertia ixx="0.024540687238520258" ixy="2.976230462081749e-16" ixz="6.335540092550173e-17" iyy="0.058446211097636744" iyz="-6.2864273786545e-17" izz="0.06916812540146265"/>
+    <inertia ixx="0.024540687238520268" ixy="2.9762304620824154e-16" ixz="5.608252282660633e-17" iyy="0.05844621109763673" iyz="-6.286427378647408e-17" izz="0.06916812540146272"/>
   </inertial>
   <visual>
     <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -26,784 +34,664 @@
   </collision>
 </link>
 
-<link name="hfe_FL_link1">
+<link name="b_hfe_motor_FL">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.04837811944868137 0.004377456626079371 0.00042958181475172464"/>
+    <origin rpy="0 0 0" xyz="0.04837811944868167 0.004377456626079371 0.00042958181475170437"/>
     <mass value="0.2875872093499024"/>
-    <inertia ixx="0.00028035492431676724" ixy="-1.2113045801185121e-05" ixz="-1.1887313311722124e-06" iyy="0.00047388103986391317" iyz="3.0511493607548857e-06" izz="0.00036132170347868975"/>
+    <inertia ixx="0.0002803549243167677" ixy="-1.2113045801184254e-05" ixz="-1.1887313311722463e-06" iyy="0.0004738810398638993" iyz="3.0511493607548417e-06" izz="0.0003613217034786516"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.437 -0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.217 -0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/hfe_FL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_hfe_motor_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.437 -0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.217 -0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/hfe_FL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_hfe_motor_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="hfe_FR_link1">
+<link name="b_hfe_motor_FR">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.048378119448682644 -0.004377456626069198 0.0004295818147517494"/>
-    <mass value="0.28758720934990234"/>
-    <inertia ixx="0.00028035492431676095" ixy="1.2113045801145222e-05" ixz="-1.1887313311704505e-06" iyy="0.00047388103986391317" iyz="-3.0511493607544283e-06" izz="0.000361321703478662"/>
-  </inertial>
-  <visual>
-    <origin rpy="0 0 0" xyz="-0.437 0.07 -0.0"/>
-    <geometry>
-      <mesh filename="meshes/hfe_FR_link1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin rpy="0 0 0" xyz="-0.437 0.07 -0.0"/>
-    <geometry>
-      <mesh filename="meshes/hfe_FR_link1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
-
-<link name="hfe_RL_link1">
-  <inertial>
-    <origin rpy="0 0 0" xyz="-0.04837811944868167 0.004377456626079482 0.000429581814751721"/>
-    <mass value="0.28758720934990234"/>
-    <inertia ixx="0.0002803549243167681" ixy="1.2113045801184362e-05" ixz="1.1887313311715788e-06" iyy="0.0004738810398638944" iyz="3.0511493607541996e-06" izz="0.00036132170347864985"/>
-  </inertial>
-  <visual>
-    <origin rpy="0 0 0" xyz="-0.003 -0.07 -0.0"/>
-    <geometry>
-      <mesh filename="meshes/hfe_RL_link1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin rpy="0 0 0" xyz="-0.003 -0.07 -0.0"/>
-    <geometry>
-      <mesh filename="meshes/hfe_RL_link1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
-
-<link name="hfe_RR_link1">
-  <inertial>
-    <origin rpy="0 0 0" xyz="-0.048378119448681915 -0.004377456626079287 0.00042958181475161167"/>
+    <origin rpy="0 0 0" xyz="0.04837811944868284 -0.004377456626069212 0.0004295818147518176"/>
     <mass value="0.2875872093499024"/>
-    <inertia ixx="0.00028035492431676616" ixy="-1.2113045801184254e-05" ixz="1.1887313311717406e-06" iyy="0.00047388103986389224" iyz="-3.051149360754774e-06" izz="0.00036132170347864465"/>
+    <inertia ixx="0.0002803549243167614" ixy="1.2113045801143488e-05" ixz="-1.1887313311703896e-06" iyy="0.00047388103986390276" iyz="-3.0511493607544283e-06" izz="0.0003613217034786481"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.003 0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.217 0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/hfe_RR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_hfe_motor_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.003 0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.217 0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/hfe_RR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_hfe_motor_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="kfe_FL_link1">
+<link name="b_hfe_motor_RL">
   <inertial>
-    <origin rpy="0 0 0" xyz="-4.294509414748404e-09 0.03773393377276327 0.002519589484959846"/>
+    <origin rpy="0 0 0" xyz="-0.04837811944868167 0.004377456626079482 0.0004295818147517815"/>
+    <mass value="0.2875872093499024"/>
+    <inertia ixx="0.0002803549243167683" ixy="1.2113045801185121e-05" ixz="1.1887313311715347e-06" iyy="0.0004738810398638993" iyz="3.0511493607541988e-06" izz="0.0003613217034786481"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0.217 -0.07 -0.0"/>
+    <geometry>
+      <mesh filename="meshes/b_hfe_motor_RL.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0.217 -0.07 -0.0"/>
+    <geometry>
+      <mesh filename="meshes/b_hfe_motor_RL.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="b_hfe_motor_RR">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-0.04837811944868195 -0.004377456626079287 0.000429581814751668"/>
+    <mass value="0.2875872093499024"/>
+    <inertia ixx="0.0002803549243167657" ixy="-1.2113045801182519e-05" ixz="1.188731331171833e-06" iyy="0.00047388103986389235" iyz="-3.0511493607547316e-06" izz="0.0003613217034786412"/>
+  </inertial>
+  <visual>
+    <origin rpy="0 0 0" xyz="0.217 0.07 -0.0"/>
+    <geometry>
+      <mesh filename="meshes/b_hfe_motor_RR.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin rpy="0 0 0" xyz="0.217 0.07 -0.0"/>
+    <geometry>
+      <mesh filename="meshes/b_hfe_motor_RR.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="b_kfe_motor_FL">
+  <inertial>
+    <origin rpy="0 0 0" xyz="-0.002512163959945135 0.03773393377276271 0.00019329617472682838"/>
     <mass value="0.30243979231772933"/>
-    <inertia ixx="0.0003497304817030901" ixy="-1.282339859298709e-11" ixz="-4.266157636574966e-11" iyy="0.00043307576818708837" iyz="1.8640860725916198e-05" izz="0.000375943096624462"/>
+    <inertia ixx="0.00037578882069899677" ixy="-1.8585922474462918e-05" ixz="-2.0050372480908577e-06" iyy="0.00043307576818706756" iyz="1.4300959327523297e-06" izz="0.00034988475762854493"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.495 -0.0945 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.275 -0.0945 -0.0"/>
     <geometry>
-      <mesh filename="meshes/kfe_FL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_kfe_motor_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.495 -0.0945 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.275 -0.0945 -0.0"/>
     <geometry>
-      <mesh filename="meshes/kfe_FL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_kfe_motor_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="kfe_RL_link1">
+<link name="b_kfe_motor_RL">
   <inertial>
-    <origin rpy="0 0 0" xyz="-4.29448054201087e-09 0.03773393377276335 0.002519589484959765"/>
+    <origin rpy="0 0 0" xyz="-0.0025121639599162693 0.03773393377276385 0.00019329617472664624"/>
     <mass value="0.30243979231772933"/>
-    <inertia ixx="0.00034973048170309183" ixy="-1.2823362597474963e-11" ixz="-4.266156855949402e-11" iyy="0.00043307576818707536" iyz="1.8640860725916143e-05" izz="0.00037594309662444293"/>
+    <inertia ixx="0.00037578882069898203" ixy="-1.8585922474440367e-05" ixz="-2.00503724809018e-06" iyy="0.00043307576818706756" iyz="1.4300959327531657e-06" izz="0.000349884757628538"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="0.055 -0.0945 0.0"/>
+    <origin rpy="0 0 0" xyz="0.275 -0.0945 0.0"/>
     <geometry>
-      <mesh filename="meshes/kfe_RL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_kfe_motor_RL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="0.055 -0.0945 0.0"/>
+    <origin rpy="0 0 0" xyz="0.275 -0.0945 0.0"/>
     <geometry>
-      <mesh filename="meshes/kfe_RL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_kfe_motor_RL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="kfe_RR_link1">
+<link name="b_kfe_motor_RR">
   <inertial>
-    <origin rpy="0 0 0" xyz="-2.412151062225476e-09 -0.037733893842588156 0.0025195550596708045"/>
+    <origin rpy="0 0 0" xyz="-0.00251212949167684 -0.037733893842588684 0.00019329541043383477"/>
     <mass value="0.30244037793017975"/>
-    <inertia ixx="0.00034973125766345724" ixy="3.02635867754919e-12" ixz="-4.464371430992547e-11" iyy="0.0004330769667441327" iyz="-1.8640648087141513e-05" izz="0.0003759440161624191"/>
+    <inertia ixx="0.00037578973969512337" ixy="1.858570971075002e-05" ixz="-2.0050462719483145e-06" iyy="0.00043307696674413365" iyz="-1.4300893874428447e-06" izz="0.00034988553413073387"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="0.055 0.0945 0.0"/>
+    <origin rpy="0 0 0" xyz="0.275 0.0945 0.0"/>
     <geometry>
-      <mesh filename="meshes/kfe_RR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_kfe_motor_RR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="0.055 0.0945 0.0"/>
+    <origin rpy="0 0 0" xyz="0.275 0.0945 0.0"/>
     <geometry>
-      <mesh filename="meshes/kfe_RR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_kfe_motor_RR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="kfe_FR_link1">
+<link name="b_kfe_motor_FR">
   <inertial>
-    <origin rpy="0 0 0" xyz="-2.4121666886145476e-09 -0.03773389384257603 0.0025195550596710083"/>
+    <origin rpy="0 0 0" xyz="-0.002512129491692494 -0.037733893842576055 0.00019329541043393403"/>
     <mass value="0.30244037793017975"/>
-    <inertia ixx="0.00034973125766345117" ixy="3.026377759507426e-12" ixz="-4.464371824693461e-11" iyy="0.0004330769667441198" iyz="-1.8640648087142083e-05" izz="0.00037594401616238005"/>
+    <inertia ixx="0.0003757897396951303" ixy="1.8585709710758694e-05" ixz="-2.0050462719484466e-06" iyy="0.0004330769667441302" iyz="-1.4300893874429531e-06" izz="0.00034988553413073734"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.495 0.0945 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.275 0.0945 -0.0"/>
     <geometry>
-      <mesh filename="meshes/kfe_FR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_kfe_motor_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.495 0.0945 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.275 0.0945 -0.0"/>
     <geometry>
-      <mesh filename="meshes/kfe_FR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_kfe_motor_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="upper_leg_FL_link1">
+<link name="b_upper_leg_FL">
   <inertial>
-    <origin rpy="0 0 0" xyz="-0.09245282024220741 0.008509257496139039 0.007352742155619165"/>
+    <origin rpy="0 0 0" xyz="-0.014423962319260575 0.00850925749615547 -0.09161624364136568"/>
     <mass value="0.28719650938086905"/>
-    <inertia ixx="0.00017089800270464993" ixy="-3.85577543140711e-05" ixz="3.801746306691673e-05" iyy="0.0020438269196165967" iyz="2.0596488784542792e-06" izz="0.0019434884605858752"/>
+    <inertia ixx="0.0019272391978443666" ixy="-5.0116920205980214e-06" ixz="-0.00017316055278734747" iyy="0.002043826919616628" iyz="-3.828610079793706e-05" izz="0.0001871472654461498"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.495 -0.1585 0.0"/>
+    <origin rpy="0 0 0" xyz="-0.275 -0.1585 -0.0"/>
     <geometry>
-      <mesh filename="meshes/upper_leg_FL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_upper_leg_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.495 -0.1585 0.0"/>
+    <origin rpy="0 0 0" xyz="-0.275 -0.1585 -0.0"/>
     <geometry>
-      <mesh filename="meshes/upper_leg_FL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_upper_leg_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="upper_leg_RL_link1">
+<link name="b_upper_leg_RL">
   <inertial>
-    <origin rpy="0 0 0" xyz="-0.09245282024215762 0.008509257496255862 0.007352742155619182"/>
+    <origin rpy="0 0 0" xyz="-0.014423962319216665 0.008509257496239403 -0.09161624364135944"/>
     <mass value="0.28719650938086905"/>
-    <inertia ixx="0.00017089800270454931" ixy="-3.855775431170407e-05" ixz="3.801746306691955e-05" iyy="0.0020438269196166904" iyz="2.059648878406466e-06" izz="0.0019434884605858647"/>
+    <inertia ixx="0.0019272391978443458" ixy="-5.011692020391589e-06" ixz="-0.00017316055278737263" iyy="0.0020438269196166835" iyz="-3.8286100796295144e-05" izz="0.00018714726544608734"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="0.055 -0.1585 -0.0"/>
+    <origin rpy="0 0 0" xyz="0.275 -0.1585 0.0"/>
     <geometry>
-      <mesh filename="meshes/upper_leg_RL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_upper_leg_RL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="0.055 -0.1585 -0.0"/>
+    <origin rpy="0 0 0" xyz="0.275 -0.1585 0.0"/>
     <geometry>
-      <mesh filename="meshes/upper_leg_RL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_upper_leg_RL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="upper_leg_RR_link1">
+<link name="b_upper_leg_RR">
   <inertial>
-    <origin rpy="0 0 0" xyz="-0.09245274297568468 -0.008509288573373935 0.007351582415994544"/>
+    <origin rpy="0 0 0" xyz="-0.014422800069823716 -0.00850928857335742 -0.09161625557670666"/>
     <mass value="0.28719862886504943"/>
-    <inertia ixx="0.00017097431453656949" ixy="3.8557824518435126e-05" ixz="3.80093216803399e-05" iyy="0.002043934929616572" iyz="-2.0611346655847063e-06" izz="0.0019435203664807579"/>
+    <inertia ixx="0.001927272610620952" ixy="5.0131788147857875e-06" ixz="-0.00017314911049837439" iyy="0.0020439349296165546" iyz="3.82860568079622e-05" izz="0.00018722207039639088"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="0.055 0.1585 0.0"/>
+    <origin rpy="0 0 0" xyz="0.275 0.1585 0.0"/>
     <geometry>
-      <mesh filename="meshes/upper_leg_RR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_upper_leg_RR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="0.055 0.1585 0.0"/>
+    <origin rpy="0 0 0" xyz="0.275 0.1585 0.0"/>
     <geometry>
-      <mesh filename="meshes/upper_leg_RR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_upper_leg_RR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="upper_leg_FR_link1">
+<link name="b_upper_leg_FR">
   <inertial>
-    <origin rpy="0 0 0" xyz="-0.09245274297570916 -0.008509288573324308 0.007351582415994245"/>
+    <origin rpy="0 0 0" xyz="-0.01442280006984642 -0.00850928857332428 -0.09161625557670817"/>
     <mass value="0.28719862886504943"/>
-    <inertia ixx="0.00017097431453659898" ixy="3.8557824519207945e-05" ixz="3.80093216803386e-05" iyy="0.0020439349296165338" iyz="-2.0611346656004273e-06" izz="0.0019435203664807527"/>
+    <inertia ixx="0.001927272610620959" ixy="5.013178814841299e-06" ixz="-0.00017314911049836831" iyy="0.0020439349296165407" iyz="3.82860568083742e-05" izz="0.00018722207039639782"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.495 0.1585 0.0"/>
+    <origin rpy="0 0 0" xyz="-0.275 0.1585 -0.0"/>
     <geometry>
-      <mesh filename="meshes/upper_leg_FR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_upper_leg_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.495 0.1585 0.0"/>
+    <origin rpy="0 0 0" xyz="-0.275 0.1585 -0.0"/>
     <geometry>
-      <mesh filename="meshes/upper_leg_FR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_upper_leg_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="lower_leg_FL_link1">
+<link name="b_lower_leg_FL">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.03768917866084845 0.010859669260576715 -0.008756414766798302"/>
+    <origin rpy="0 0 0" xyz="0.011621797718557814 0.010859669260623678 0.03690633523092879"/>
     <mass value="0.10027511378483192"/>
-    <inertia ixx="2.4257456964952174e-05" ixy="-1.7649493646351017e-07" ixz="6.0654005374095096e-05" iyy="0.00034828592771582456" iyz="2.3843216718057517e-08" izz="0.0003325569543160944"/>
+    <inertia ixx="0.0003214631585384429" ixy="-3.7313464832690324e-08" ixz="-8.352273777319664e-05" iyy="0.0003482859277158228" iyz="-1.741455336922229e-07" izz="3.535125274260059e-05"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.245723 -0.1545 0.019"/>
+    <origin rpy="0 0 0" xyz="-0.27482 -0.1545 0.25"/>
     <geometry>
-      <mesh filename="meshes/lower_leg_FL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_lower_leg_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.245723 -0.1545 0.019"/>
+    <origin rpy="0 0 0" xyz="-0.27482 -0.1545 0.25"/>
     <geometry>
-      <mesh filename="meshes/lower_leg_FL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_lower_leg_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="lower_leg_RL_link1">
+<link name="b_lower_leg_RL">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.03768917866091476 0.010859669260778582 -0.008756414766798407"/>
+    <origin rpy="0 0 0" xyz="0.011621797718602445 0.010859669260731647 0.03690633523095205"/>
     <mass value="0.10027511378483192"/>
-    <inertia ixx="2.4257456964946536e-05" ixy="-1.7649493548946293e-07" ixz="6.0654005374095204e-05" iyy="0.00034828592771582803" iyz="2.384321653574892e-08" izz="0.0003325569543160961"/>
+    <inertia ixx="0.0003214631585384412" ixy="-3.731346460023738e-08" ixz="-8.352273777320011e-05" iyy="0.0003482859277158228" iyz="-1.7414553283440215e-07" izz="3.535125274259712e-05"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="0.304277 -0.1545 0.019"/>
+    <origin rpy="0 0 0" xyz="0.27518 -0.1545 0.25"/>
     <geometry>
-      <mesh filename="meshes/lower_leg_RL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_lower_leg_RL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="0.304277 -0.1545 0.019"/>
+    <origin rpy="0 0 0" xyz="0.27518 -0.1545 0.25"/>
     <geometry>
-      <mesh filename="meshes/lower_leg_RL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_lower_leg_RL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="lower_leg_FR_link1">
+<link name="b_lower_leg_FR">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.037689178660886086 -0.011140330739316723 -0.008756414766798285"/>
+    <origin rpy="0 0 0" xyz="0.011621797718578963 -0.011140330739316584 0.03690633523094655"/>
     <mass value="0.10027511378483192"/>
-    <inertia ixx="2.425745696495044e-05" ixy="-1.764949357644166e-07" ixz="6.0654005374094553e-05" iyy="0.00034828592771582977" iyz="2.3843216587356945e-08" izz="0.0003325569543160944"/>
+    <inertia ixx="0.0003214631585384438" ixy="-3.731346466182006e-08" ixz="-8.352273777320098e-05" iyy="0.00034828592771582456" iyz="-1.7414553305644676e-07" izz="3.535125274259539e-05"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.245723 0.1545 0.019"/>
+    <origin rpy="0 0 0" xyz="-0.27482 0.1545 0.25"/>
     <geometry>
-      <mesh filename="meshes/lower_leg_FR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_lower_leg_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.245723 0.1545 0.019"/>
+    <origin rpy="0 0 0" xyz="-0.27482 0.1545 0.25"/>
     <geometry>
-      <mesh filename="meshes/lower_leg_FR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_lower_leg_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="lower_leg_RR_link1">
+<link name="b_lower_leg_RR">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.03768917866091659 -0.011140330739393495 -0.00875641476679826"/>
+    <origin rpy="0 0 0" xyz="0.011621797718602167 -0.011140330739346588 0.036906335230954074"/>
     <mass value="0.10027511378483192"/>
-    <inertia ixx="2.425745696494697e-05" ixy="-1.7649493608273836e-07" ixz="6.0654005374094553e-05" iyy="0.00034828592771582456" iyz="2.3843216646717014e-08" izz="0.00033255695431609264"/>
+    <inertia ixx="0.0003214631585384429" ixy="-3.7313464732943724e-08" ixz="-8.352273777319924e-05" iyy="0.0003482859277158211" iyz="-1.7414553331839e-07" izz="3.535125274259712e-05"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="0.304277 0.1545 0.019"/>
+    <origin rpy="0 0 0" xyz="0.27518 0.1545 0.25"/>
     <geometry>
-      <mesh filename="meshes/lower_leg_RR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_lower_leg_RR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="0.304277 0.1545 0.019"/>
+    <origin rpy="0 0 0" xyz="0.27518 0.1545 0.25"/>
     <geometry>
-      <mesh filename="meshes/lower_leg_RR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_lower_leg_RR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="haa_FR_link1">
+<link name="b_haa_motor_FR">
   <inertial>
-    <origin rpy="0 0 0" xyz="-0.016983261704377528 8.790073738329518e-09 0.0005413876110014399"/>
+    <origin rpy="0 0 0" xyz="-0.016983261704377528 8.790073766085094e-09 0.0005413876110014865"/>
     <mass value="0.22819661408568134"/>
-    <inertia ixx="0.000337396201269129" ixy="4.8251645734520565e-11" ixz="3.1919090569474247e-06" iyy="0.00022867987683110325" iyz="1.0859537874925154e-12" izz="0.0002340324473857694"/>
+    <inertia ixx="0.0003373962012691294" ixy="4.825164790292491e-11" ixz="3.191909056947394e-06" iyy="0.00022867987683109804" iyz="1.0859538179857015e-12" izz="0.00023403244738576245"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.435 0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.215 0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/haa_FR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_haa_motor_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.435 0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.215 0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/haa_FR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_haa_motor_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="haa_FL_link1">
+<link name="b_haa_motor_FL">
   <inertial>
-    <origin rpy="0 0 0" xyz="-0.01698326170437736 8.790073710573942e-09 0.000541387611001353"/>
+    <origin rpy="0 0 0" xyz="-0.01698326170437725 8.79007372445173e-09 0.0005413876110013799"/>
     <mass value="0.22819661408568134"/>
-    <inertia ixx="0.0003373962012691303" ixy="4.825164833660578e-11" ixz="3.1919090569474247e-06" iyy="0.00022867987683111018" iyz="1.0859537891865813e-12" izz="0.00023403244738575552"/>
+    <inertia ixx="0.0003373962012691307" ixy="4.825164746924404e-11" ixz="3.191909056947428e-06" iyy="0.0002286798768310963" iyz="1.0859538179857015e-12" izz="0.00023403244738576072"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.435 -0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.215 -0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/haa_FL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_haa_motor_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.435 -0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="-0.215 -0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/haa_FL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_haa_motor_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="haa_RL_link1">
+<link name="b_haa_motor_RL">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.016983261704377323 -8.790073710573942e-09 0.0005413876110013534"/>
+    <origin rpy="0 0 0" xyz="0.016983261704377278 -8.790073738329518e-09 0.0005413876110014156"/>
     <mass value="0.22819661408568134"/>
-    <inertia ixx="0.0003373962012691307" ixy="4.825164752345415e-11" ixz="-3.1919090569474293e-06" iyy="0.00022867987683109514" iyz="-1.0859537874925154e-12" izz="0.00023403244738576007"/>
+    <inertia ixx="0.0003373962012691309" ixy="4.825164703556317e-11" ixz="-3.1919090569474247e-06" iyy="0.0002286798768310911" iyz="-1.0859538230678992e-12" izz="0.00023403244738575552"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.005 -0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="0.215 -0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/haa_RL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_haa_motor_RL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.005 -0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="0.215 -0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/haa_RL_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_haa_motor_RL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="haa_RR_link1">
+<link name="b_haa_motor_RR">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.01698326170437754 -8.790073710573942e-09 0.0005413876110013454"/>
+    <origin rpy="0 0 0" xyz="0.016983261704377528 -8.79007372445173e-09 0.0005413876110013802"/>
     <mass value="0.22819661408568134"/>
-    <inertia ixx="0.0003373962012691303" ixy="4.825164757766426e-11" ixz="-3.1919090569474276e-06" iyy="0.00022867987683109506" iyz="-1.0859537908806472e-12" izz="0.00023403244738575985"/>
+    <inertia ixx="0.0003373962012691309" ixy="4.825164790292491e-11" ixz="-3.1919090569474484e-06" iyy="0.00022867987683109457" iyz="-1.0859538213738333e-12" izz="0.00023403244738576245"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.005 0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="0.215 0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/haa_RR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_haa_motor_RR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.005 0.07 -0.0"/>
+    <origin rpy="0 0 0" xyz="0.215 0.07 -0.0"/>
     <geometry>
-      <mesh filename="meshes/haa_RR_link1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_haa_motor_RR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="foot_FL1">
+<link name="b_foot_FL">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.02133983534410533 4.2837955405161665e-13 -0.010597580994673915"/>
+    <origin rpy="0 0 0" xyz="0.012203978896202616 4.4481085481606897e-13 0.020464654888621384"/>
     <mass value="0.07686399002843429"/>
-    <inertia ixx="1.739369906263036e-05" ixy="2.0556473190325164e-16" ixz="9.198075480345257e-06" iyy="4.3907602882892194e-05" iyz="-7.968885967768458e-17" izz="3.326675381602057e-05"/>
+    <inertia ixx="3.1766152773537656e-05" ixy="9.540979117872439e-17" ixz="-1.0303975522280549e-05" iyy="4.390760288289046e-05" iyz="2.0122792321330962e-16" izz="1.8894300105112838e-05"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.466729 -0.1655 0.061283"/>
+    <origin rpy="0 0 0" xyz="-0.333933 -0.1655 0.03289"/>
     <geometry>
-      <mesh filename="meshes/foot_FL1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_foot_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.466729 -0.1655 0.061283"/>
+    <origin rpy="0 0 0" xyz="-0.333933 -0.1655 0.03289"/>
     <geometry>
-      <mesh filename="meshes/foot_FL1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_foot_FL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="foot_FR1">
+<link name="b_foot_FR">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.021339835344143687 1.4790946245568648e-13 -0.010597580994673943"/>
+    <origin rpy="0 0 0" xyz="0.012203978896224155 1.4785395130445522e-13 0.020464654888639612"/>
     <mass value="0.07686399002843429"/>
-    <inertia ixx="1.7393699062635565e-05" ixy="1.968911145233676e-16" ixz="9.198075480352196e-06" iyy="4.390760288290607e-05" iyz="-7.41594285980085e-17" izz="3.3266753816024036e-05"/>
+    <inertia ixx="3.176615277354503e-05" ixy="8.847089727481716e-17" ixz="-1.0303975522285862e-05" iyy="4.390760288290607e-05" iyz="1.911177379548823e-16" izz="1.8894300105119777e-05"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="-0.466729 0.1655 0.061283"/>
+    <origin rpy="0 0 0" xyz="-0.333933 0.1655 0.03289"/>
     <geometry>
-      <mesh filename="meshes/foot_FR1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_foot_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="-0.466729 0.1655 0.061283"/>
+    <origin rpy="0 0 0" xyz="-0.333933 0.1655 0.03289"/>
     <geometry>
-      <mesh filename="meshes/foot_FR1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_foot_FR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="foot_RR1">
+<link name="b_foot_RR">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.021339835344173594 2.4361068717837497e-13 -0.010597580994673582"/>
+    <origin rpy="0 0 0" xyz="0.012203978896247025 2.6009749909405855e-13 0.020464654888646645"/>
     <mass value="0.07686399002843429"/>
-    <inertia ixx="1.7393699062630795e-05" ixy="2.0383000842727483e-16" ixz="9.198075480346883e-06" iyy="4.3907602882894904e-05" iyz="-7.795413620170777e-17" izz="3.326675381602057e-05"/>
+    <inertia ixx="3.176615277354026e-05" ixy="9.280770596475918e-17" ixz="-1.030397552228082e-05" iyy="4.3907602882892194e-05" iyz="2.0046898169256977e-16" izz="1.8894300105110236e-05"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="0.083271 0.1655 0.061283"/>
+    <origin rpy="0 0 0" xyz="0.216067 0.1655 0.03289"/>
     <geometry>
-      <mesh filename="meshes/foot_RR1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_foot_RR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="0.083271 0.1655 0.061283"/>
+    <origin rpy="0 0 0" xyz="0.216067 0.1655 0.03289"/>
     <geometry>
-      <mesh filename="meshes/foot_RR1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_foot_RR.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<link name="foot_RL1">
+<link name="b_foot_RL">
   <inertial>
-    <origin rpy="0 0 0" xyz="0.02133983534417249 9.239831122442865e-14 -0.010597580994674012"/>
+    <origin rpy="0 0 0" xyz="0.012203978896247608 7.60225216112076e-14 0.020464654888645507"/>
     <mass value="0.07686399002843429"/>
-    <inertia ixx="1.7393699062629494e-05" ixy="1.9103642279194588e-16" ixz="9.198075480345745e-06" iyy="4.390760288289089e-05" iyz="-7.036472099430924e-17" izz="3.3266753816021434e-05"/>
+    <inertia ixx="3.176615277353939e-05" ixy="8.500145032286355e-17" ixz="-1.0303975522280576e-05" iyy="4.390760288288742e-05" iyz="1.8176649421719482e-16" izz="1.8894300105111103e-05"/>
   </inertial>
   <visual>
-    <origin rpy="0 0 0" xyz="0.083271 -0.1655 0.061283"/>
+    <origin rpy="0 0 0" xyz="0.216067 -0.1655 0.03289"/>
     <geometry>
-      <mesh filename="meshes/foot_RL1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_foot_RL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin rpy="0 0 0" xyz="0.083271 -0.1655 0.061283"/>
+    <origin rpy="0 0 0" xyz="0.216067 -0.1655 0.03289"/>
     <geometry>
-      <mesh filename="meshes/foot_RL1.stl" scale="0.001 0.001 0.001"/>
+      <mesh filename="meshes/b_foot_RL.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
-<joint name="haa_to_hfe_FL" type="continuous">
+<joint name="j_haa_FL" type="continuous">
   <origin rpy="0 0 0" xyz="0.002 0.0 0.0"/>
-  <parent link="haa_FL_link1"/>
-  <child link="hfe_FL_link1"/>
+  <parent link="b_haa_motor_FL"/>
+  <child link="b_hfe_motor_FL"/>
   <axis xyz="1.0 0.0 0.0"/>
 </joint>
-<transmission name="haa_to_hfe_FL_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="haa_to_hfe_FL">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="haa_to_hfe_FL_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
 
-<joint name="haa_to_hfe_FR" type="continuous">
+<joint name="j_haa_FR" type="continuous">
   <origin rpy="0 0 0" xyz="0.002 0.0 0.0"/>
-  <parent link="haa_FR_link1"/>
-  <child link="hfe_FR_link1"/>
-  <axis xyz="1.0 0.0 0.0"/>
+  <parent link="b_haa_motor_FR"/>
+  <child link="b_hfe_motor_FR"/>
+  <axis xyz="1.0 0.0 -0.0"/>
 </joint>
-<transmission name="haa_to_hfe_FR_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="haa_to_hfe_FR">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="haa_to_hfe_FR_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
 
-<joint name="haa_to_hfe_RL" type="continuous">
+<joint name="j_haa_RL" type="continuous">
   <origin rpy="0 0 0" xyz="-0.002 0.0 0.0"/>
-  <parent link="haa_RL_link1"/>
-  <child link="hfe_RL_link1"/>
-  <axis xyz="-1.0 -0.0 0.0"/>
+  <parent link="b_haa_motor_RL"/>
+  <child link="b_hfe_motor_RL"/>
+  <axis xyz="-1.0 -0.0 -0.0"/>
 </joint>
-<transmission name="haa_to_hfe_RL_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="haa_to_hfe_RL">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="haa_to_hfe_RL_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
 
-<joint name="haa_to_hfe_RR" type="continuous">
+<joint name="j_haa_RR" type="continuous">
   <origin rpy="0 0 0" xyz="-0.002 0.0 0.0"/>
-  <parent link="haa_RR_link1"/>
-  <child link="hfe_RR_link1"/>
-  <axis xyz="-1.0 -0.0 0.0"/>
+  <parent link="b_haa_motor_RR"/>
+  <child link="b_hfe_motor_RR"/>
+  <axis xyz="-1.0 -0.0 -0.0"/>
 </joint>
-<transmission name="haa_to_hfe_RR_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="haa_to_hfe_RR">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="haa_to_hfe_RR_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
 
-<joint name="hfe_to_kfe_FL" type="continuous">
+<joint name="j_hfe_FL" type="continuous">
   <origin rpy="0 0 0" xyz="0.058 0.0245 0.0"/>
-  <parent link="hfe_FL_link1"/>
-  <child link="kfe_FL_link1"/>
+  <parent link="b_hfe_motor_FL"/>
+  <child link="b_kfe_motor_FL"/>
   <axis xyz="-0.0 1.0 0.0"/>
 </joint>
-<transmission name="hfe_to_kfe_FL_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="hfe_to_kfe_FL">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="hfe_to_kfe_FL_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
 
-<joint name="hfe_to_kfe_RL" type="continuous">
+<joint name="j_hfe_RL" type="continuous">
   <origin rpy="0 0 0" xyz="-0.058 0.0245 -0.0"/>
-  <parent link="hfe_RL_link1"/>
-  <child link="kfe_RL_link1"/>
+  <parent link="b_hfe_motor_RL"/>
+  <child link="b_kfe_motor_RL"/>
   <axis xyz="-0.0 -1.0 0.0"/>
 </joint>
-<transmission name="hfe_to_kfe_RL_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="hfe_to_kfe_RL">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="hfe_to_kfe_RL_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
 
-<joint name="hfe_to_kfe_RR" type="continuous">
+<joint name="j_hfe_RR" type="continuous">
   <origin rpy="0 0 0" xyz="-0.058 -0.0245 -0.0"/>
-  <parent link="hfe_RR_link1"/>
-  <child link="kfe_RR_link1"/>
-  <axis xyz="0.0 -1.0 0.0"/>
-</joint>
-<transmission name="hfe_to_kfe_RR_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="hfe_to_kfe_RR">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="hfe_to_kfe_RR_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
-
-<joint name="hfe_to_kfe_FR" type="continuous">
-  <origin rpy="0 0 0" xyz="0.058 -0.0245 0.0"/>
-  <parent link="hfe_FR_link1"/>
-  <child link="kfe_FR_link1"/>
-  <axis xyz="0.0 1.0 0.0"/>
-</joint>
-<transmission name="hfe_to_kfe_FR_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="hfe_to_kfe_FR">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="hfe_to_kfe_FR_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
-
-<joint name="hfe_to_upper_leg_FL" type="fixed">
-  <origin rpy="0 0 0" xyz="0.0 0.064 -0.0"/>
-  <parent link="kfe_FL_link1"/>
-  <child link="upper_leg_FL_link1"/>
-</joint>
-
-<joint name="hfe_to_upper_leg_RL" type="fixed">
-  <origin rpy="0 0 0" xyz="0.0 0.064 0.0"/>
-  <parent link="kfe_RL_link1"/>
-  <child link="upper_leg_RL_link1"/>
-</joint>
-
-<joint name="hfe_to_upper_leg_RR" type="fixed">
-  <origin rpy="0 0 0" xyz="0.0 -0.064 0.0"/>
-  <parent link="kfe_RR_link1"/>
-  <child link="upper_leg_RR_link1"/>
-</joint>
-
-<joint name="hfe_to_upper_leg_FR" type="fixed">
-  <origin rpy="0 0 0" xyz="0.0 -0.064 -0.0"/>
-  <parent link="kfe_FR_link1"/>
-  <child link="upper_leg_FR_link1"/>
-</joint>
-
-<joint name="upper_leg_to_lower_leg_FL" type="continuous">
-  <origin rpy="0 0 0" xyz="-0.249277 -0.004 -0.019"/>
-  <parent link="upper_leg_FL_link1"/>
-  <child link="lower_leg_FL_link1"/>
-  <axis xyz="0.0 -1.0 0.0"/>
-</joint>
-<transmission name="upper_leg_to_lower_leg_FL_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="upper_leg_to_lower_leg_FL">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="upper_leg_to_lower_leg_FL_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
-
-<joint name="upper_leg_to_lower_leg_RL" type="continuous">
-  <origin rpy="0 0 0" xyz="-0.249277 -0.004 -0.019"/>
-  <parent link="upper_leg_RL_link1"/>
-  <child link="lower_leg_RL_link1"/>
-  <axis xyz="-0.0 -1.0 0.0"/>
-</joint>
-<transmission name="upper_leg_to_lower_leg_RL_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="upper_leg_to_lower_leg_RL">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="upper_leg_to_lower_leg_RL_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
-
-<joint name="upper_leg_to_lower_leg_FR" type="continuous">
-  <origin rpy="0 0 0" xyz="-0.249277 0.004 -0.019"/>
-  <parent link="upper_leg_FR_link1"/>
-  <child link="lower_leg_FR_link1"/>
-  <axis xyz="-0.0 -1.0 -0.0"/>
-</joint>
-<transmission name="upper_leg_to_lower_leg_FR_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="upper_leg_to_lower_leg_FR">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="upper_leg_to_lower_leg_FR_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
-
-<joint name="upper_leg_to_lower_leg_RR" type="continuous">
-  <origin rpy="0 0 0" xyz="-0.249277 0.004 -0.019"/>
-  <parent link="upper_leg_RR_link1"/>
-  <child link="lower_leg_RR_link1"/>
+  <parent link="b_hfe_motor_RR"/>
+  <child link="b_kfe_motor_RR"/>
   <axis xyz="0.0 -1.0 -0.0"/>
 </joint>
-<transmission name="upper_leg_to_lower_leg_RR_tran">
-  <type>transmission_interface/SimpleTransmission</type>
-  <joint name="upper_leg_to_lower_leg_RR">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-  </joint>
-  <actuator name="upper_leg_to_lower_leg_RR_actr">
-    <hardwareInterface>PositionJointInterface</hardwareInterface>
-    <mechanicalReduction>1</mechanicalReduction>
-  </actuator>
-</transmission>
 
-<joint name="base_link_haa_FR" type="fixed">
-  <origin rpy="0 0 0" xyz="0.435 -0.07 0.0"/>
+<joint name="j_hfe_FR" type="continuous">
+  <origin rpy="0 0 0" xyz="0.058 -0.0245 0.0"/>
+  <parent link="b_hfe_motor_FR"/>
+  <child link="b_kfe_motor_FR"/>
+  <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+<joint name="j_hfe_to_upper_leg_FL" type="fixed">
+  <origin rpy="0 0 0" xyz="0.0 0.064 0.0"/>
+  <parent link="b_kfe_motor_FL"/>
+  <child link="b_upper_leg_FL"/>
+</joint>
+
+<joint name="j_hfe_to_upper_leg_RL" type="fixed">
+  <origin rpy="0 0 0" xyz="0.0 0.064 0.0"/>
+  <parent link="b_kfe_motor_RL"/>
+  <child link="b_upper_leg_RL"/>
+</joint>
+
+<joint name="j_hfe_to_upper_leg_RR" type="fixed">
+  <origin rpy="0 0 0" xyz="0.0 -0.064 0.0"/>
+  <parent link="b_kfe_motor_RR"/>
+  <child link="b_upper_leg_RR"/>
+</joint>
+
+<joint name="j_hfe_to_upper_leg_FR" type="fixed">
+  <origin rpy="0 0 0" xyz="0.0 -0.064 0.0"/>
+  <parent link="b_kfe_motor_FR"/>
+  <child link="b_upper_leg_FR"/>
+</joint>
+
+<joint name="j_kfe_FL" type="continuous">
+  <origin rpy="0 0 0" xyz="-0.00018 -0.004 -0.25"/>
+  <parent link="b_upper_leg_FL"/>
+  <child link="b_lower_leg_FL"/>
+  <axis xyz="0.0 -1.0 0.0"/>
+</joint>
+
+<joint name="j_kfe_RL" type="continuous">
+  <origin rpy="0 0 0" xyz="-0.00018 -0.004 -0.25"/>
+  <parent link="b_upper_leg_RL"/>
+  <child link="b_lower_leg_RL"/>
+  <axis xyz="-0.0 -1.0 -0.0"/>
+</joint>
+
+<joint name="j_kfe_FR" type="continuous">
+  <origin rpy="0 0 0" xyz="-0.00018 0.004 -0.25"/>
+  <parent link="b_upper_leg_FR"/>
+  <child link="b_lower_leg_FR"/>
+  <axis xyz="-0.0 -1.0 -0.0"/>
+</joint>
+
+<joint name="j_kfe_RR" type="continuous">
+  <origin rpy="0 0 0" xyz="-0.00018 0.004 -0.25"/>
+  <parent link="b_upper_leg_RR"/>
+  <child link="b_lower_leg_RR"/>
+  <axis xyz="0.0 -1.0 0.0"/>
+</joint>
+
+<joint name="j_base_link_haa_FR" type="fixed">
+  <origin rpy="0 0 0" xyz="0.215 -0.07 0.0"/>
   <parent link="base_link"/>
-  <child link="haa_FR_link1"/>
+  <child link="b_haa_motor_FR"/>
 </joint>
 
-<joint name="base_link_haa_FL" type="fixed">
-  <origin rpy="0 0 0" xyz="0.435 0.07 0.0"/>
+<joint name="j_base_link_haa_FL" type="fixed">
+  <origin rpy="0 0 0" xyz="0.215 0.07 0.0"/>
   <parent link="base_link"/>
-  <child link="haa_FL_link1"/>
+  <child link="b_haa_motor_FL"/>
 </joint>
 
-<joint name="base_link_haa_RL" type="fixed">
-  <origin rpy="0 0 0" xyz="0.005 0.07 0.0"/>
+<joint name="j_base_link_haa_RL" type="fixed">
+  <origin rpy="0 0 0" xyz="-0.215 0.07 0.0"/>
   <parent link="base_link"/>
-  <child link="haa_RL_link1"/>
+  <child link="b_haa_motor_RL"/>
 </joint>
 
-<joint name="base_link_haa_RR" type="fixed">
-  <origin rpy="0 0 0" xyz="0.005 -0.07 0.0"/>
+<joint name="j_base_link_haa_RR" type="fixed">
+  <origin rpy="0 0 0" xyz="-0.215 -0.07 0.0"/>
   <parent link="base_link"/>
-  <child link="haa_RR_link1"/>
+  <child link="b_haa_motor_RR"/>
 </joint>
 
-<joint name="knee_to_foot_FL" type="fixed">
-  <origin rpy="0 0 0" xyz="0.221006 0.011 -0.042283"/>
-  <parent link="lower_leg_FL_link1"/>
-  <child link="foot_FL1"/>
+<joint name="j_knee_to_foot_FL" type="fixed">
+  <origin rpy="0 0 0" xyz="0.059113 0.011 0.21711"/>
+  <parent link="b_lower_leg_FL"/>
+  <child link="b_foot_FL"/>
 </joint>
 
-<joint name="knee_to_foot_FR" type="fixed">
-  <origin rpy="0 0 0" xyz="0.221006 -0.011 -0.042283"/>
-  <parent link="lower_leg_FR_link1"/>
-  <child link="foot_FR1"/>
+<joint name="j_knee_to_foot_FR" type="fixed">
+  <origin rpy="0 0 0" xyz="0.059113 -0.011 0.21711"/>
+  <parent link="b_lower_leg_FR"/>
+  <child link="b_foot_FR"/>
 </joint>
 
-<joint name="knee_to_foot_RR" type="fixed">
-  <origin rpy="0 0 0" xyz="0.221006 -0.011 -0.042283"/>
-  <parent link="lower_leg_RR_link1"/>
-  <child link="foot_RR1"/>
+<joint name="j_knee_to_foot_RR" type="fixed">
+  <origin rpy="0 0 0" xyz="0.059113 -0.011 0.21711"/>
+  <parent link="b_lower_leg_RR"/>
+  <child link="b_foot_RR"/>
 </joint>
 
-<joint name="knee_to_foot_RL" type="fixed">
-  <origin rpy="0 0 0" xyz="0.221006 0.011 -0.042283"/>
-  <parent link="lower_leg_RL_link1"/>
-  <child link="foot_RL1"/>
+<joint name="j_knee_to_foot_RL" type="fixed">
+  <origin rpy="0 0 0" xyz="0.059113 0.011 0.21711"/>
+  <parent link="b_lower_leg_RL"/>
+  <child link="b_foot_RL"/>
 </joint>
 
 </robot>
