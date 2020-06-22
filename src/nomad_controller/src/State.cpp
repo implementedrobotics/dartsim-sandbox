@@ -1,5 +1,5 @@
 /*
- * CrouchState.h
+ * FiniteStateMachine.cpp
  *
  *  Created on: June 21, 2020
  *      Author: Quincy Jones
@@ -21,38 +21,52 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOMAD_CROUCH_STATE_H_
-#define NOMAD_CROUCH_STATE_H_
-
 // C System Files
 
 // C++ System Files
-#include <memory>
-#include <string>
+#include <iostream>
 
 // Third Party Includes
-#include <Eigen/Dense>
 
 // Project Include Files
 #include <State.h>
-#include <CubicPolynomialTrajectory.h>
 
-class CrouchState : public FiniteStateMachine::State
-{
+    State::State(const std::string &name, std::size_t id) 
+    : name_(name), 
+    id_(id)
+    {
+      // Nothing to do
+    }
 
-public:
-  CrouchState();
+    void State::Setup() 
+    {
+        // Nothing to do
+    }
 
-  void Enter();                     // Default Do Nothing
-  void Exit();                      // Default Do Nothing
+    void State::Enter() 
+    {
+        // Nothing to do
+    }
 
-  virtual bool Transition(std::shared_ptr<FiniteStateMachine::State> pNextState) = 0; // Force Transition
-  void Run(); // Override for state execution logic
+    void State::Exit()
+    {
+        // Nothing to do
+    }
 
-protected:
-    CubicPolynomialTrajectory crouch_traj_;
-    double start_time_;
-    Eigen::Vector3d start_pos_;
-};
+    void State::AddTransitionEvent(TransitionEventPtr event, StatePtr next_state)
+    {
+        transition_map_.emplace(event, next_state);
+    }
+    bool State::ReadyToTransition()
+    {
+        // Loop transition maps for active events and then start transition
+        return false;
+    }
 
-#endif // NOMAD_CROUCH_STATE_H_
+
+    // Next State to transition to
+    StatePtr State::NextState()
+    {
+
+    }
+

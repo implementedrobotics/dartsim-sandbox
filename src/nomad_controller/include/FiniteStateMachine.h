@@ -29,47 +29,106 @@
 // C++ System Files
 #include <memory>
 #include <string>
-#include <map>
+#include <vector>
 
 // Third Party Includes
-
 
 // Project Include Files
 #include <State.h>
 
-namespace FiniteStateMachine
-{
-class FiniteStateMachine
-{
-public:
+//namespace FiniteStateMachine
+//{
+  class FiniteStateMachine;
+  // Pointer type definition
+  using FiniteStateMachinePtr = std::shared_ptr<FiniteStateMachine>;
 
-  FiniteStateMachine(const std::string &name);
+  // Finite State Machine Class
+  class FiniteStateMachine
+  {
+  public:
+    // Base Class Finite State Machine
+    // name = Finite State Machine Name
+    FiniteStateMachine(const std::string &name);
 
-  bool AddState(std::shared_ptr<State> state);
+    // Get the name of this state machine
+    inline const std::string& GetName() const
+    {
+      return name_;
+    }
 
-  bool SetDefaultState(std::shared_ptr<State> state);
+    // Add a new state to the state machine
+    // state = Pointer to state object
+    bool AddState(StatePtr state);
 
-  bool SetDefaultState(int stateId);
+    // Sets initial state of the state machine
+    // state = Pointer to state object
+    bool SetInitialState(StatePtr state);
 
-  bool Reset();
+    // Reset state machine to initial start conditions
+    virtual bool Reset();
 
-  bool Start();
+    // Initializes the state machine and runs any setup code needed before state machine
+    // can be ran
+    virtual bool Start();
 
-  bool Run();
+    // Run an iteration of the state machine
+    virtual bool Run(double dt);
 
-  void TransitionTo(int state);
+    // Stop state machine and cleans up
+    virtual bool Stop();
 
-  std::shared_ptr<State> FindState(int eStateId);
+    // TODO: Multiple transition functions?
+    // Transition to state
+    // state_id = State id of requested state transition
+    void TransitionTo(std::size_t state_id);
 
-  // Nomad Data Pointer
+    // Transition to state
+    // state_name = State name of requested state transition
+    void TransitionTo(const std::string &state_name);
 
-protected:
-  std::shared_ptr<State> current_state_; // Set Current State
-  std::shared_ptr<State> default_state_; // State to reset
-  std::string name_;
+    // Transition to state
+    // state_id = State id of requested state transition
+    void TransitionTo(const StatePtr &state);
 
-  std::map<int, std::shared_ptr<State> > state_list_;
-};
-}
+    // Create new state machine object
+    // name = Finite State Machine name
+    static FiniteStateMachinePtr Create(const std::string& name);
+
+  protected:
+    // State machine name
+    std::string name_;
+
+    // Current state of the state machine
+    StatePtr current_state_;
+
+    // Initial state of the state machine when started
+    StatePtr initial_state_;
+
+    // List of statesUsing State Machines, Part 2
+    double start_time_;
+
+    // End time of state machine
+    double end_time_;
+
+    // Total elapsed time since state machine began
+    double elapsed_time_;
+
+    // Total iteration count of state machine run cycles
+    std::size_t cycle_count_;
+
+    // List of states in this state machine
+    std::vector<StatePtr> state_list_;
+
+  private:
+    // Find State
+    // name = State name of state to find
+    StatePtr FindState(const std::string &name);
+
+    // Checks for state being a valid state
+    // state = State to check for validity
+    bool ValidState(const StatePtr &state);
+
+  };
+//} // namespace FiniteStateMachine
 
 #endif // NOMAD_FINITESTATEMACHINE_H_

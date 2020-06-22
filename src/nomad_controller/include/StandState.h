@@ -21,8 +21,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOMAD_CROUCH_STATE_H_
-#define NOMAD_CROUCH_STATE_H_
+#ifndef NOMAD_STAND_STATE_H_
+#define NOMAD_STAND_STATE_H_
 
 // C System Files
 
@@ -37,11 +37,11 @@
 #include <State.h>
 #include <CubicPolynomialTrajectory.h>
 
-class CrouchState : public FiniteStateMachine::State
+class StandState : public FiniteStateMachine::State
 {
 
 public:
-  CrouchState();
+  StandState();
 
   void Enter();                     // Default Do Nothing
   void Exit();                      // Default Do Nothing
@@ -50,9 +50,9 @@ public:
   void Run(); // Override for state execution logic
 
 protected:
-    CubicPolynomialTrajectory crouch_traj_;
+    CubicPolynomialTrajectory stand_traj_;
     double start_time_;
     Eigen::Vector3d start_pos_;
 };
 
-#endif // NOMAD_CROUCH_STATE_H_
+#endif // NOMAD_STAND_STATE_H_

@@ -29,42 +29,78 @@
 // C++ System Files
 #include <memory>
 #include <string>
+#include <map>
 
 // Third Party Includes
 
-
 // Project Include Files
+#include <TransitionEvent.h>
 
-namespace FiniteStateMachine
-{
+//namespace FiniteStateMachine
+//{
+// Pointer type definition
+class State;
+using StatePtr = std::shared_ptr<State>;
+
+// State Class
 class State
 {
-  //friend class FiniteStateMachine;
-
 public:
-  State(const std::string &name, int id) : name_(name), id_(id), in_transition_(false), next_state_(this)
+  // Base Class State
+  // name = State name
+  // id = State id
+  State(const std::string &name, std::size_t id);
+
+  // Get the name of this state
+  inline const std::string &GetName() const
   {
+    return name_;
   }
-  const std::string &Name() const { return name_; } // State Name
-  const int &Id() const { return id_; }       // State ID
-  virtual void Setup(){};                     // Default Do Nothing
-  virtual void Enter(){};                     // Default Do Nothing
-  virtual void Exit(){};                      // Default Do Nothing
 
-  virtual bool Transition(std::shared_ptr<State> pNextState) = 0; // Force Transition
-  const bool InTransition() const { return in_transition_; }
-  virtual void Run() = 0; // Override for state execution logic
+  // Get the id of this state
+  inline const std::size_t &id() const
+  {
+    return id_;
+  }
 
-  std::shared_ptr<State> NextState() { return next_state_; } // Next State to transition to
+  // inline const bool InTransition() const
+  // {
+  //   return in_transition_;
+  // }
+
+  // Check if state is ready/needs to transition
+  virtual bool ReadyToTransition();
+
+  // Add state transition event
+  // event = Event to cause a state transition
+  // next_state = next state to transition to upon event being active
+  void AddTransitionEvent(TransitionEventPtr event, StatePtr next_state);
+
+  // Initial first time state setup
+  virtual void Setup();
+
+  // Called upon a state change and we enter this state
+  virtual void Enter();
+
+  // Called upon a state change and we are exiting this state
+  virtual void Exit();
+
+  // Logic to run each iteration of the state machine run
+  virtual void Run() = 0;
+
+  // Next State to transition to
+  StatePtr NextState();
+
   // TODO: Valid state transition?
 
 protected:
-  std::string name_;           // State Name
-  int id_;         // State ID
-  bool in_transition_;         // In Transition
-  std::shared_ptr<State>  next_state_;  // Next State
-  //std::unique_ptr<FiniteStateMachine> parent_; // Parent FSM that state is in
+  std::string name_; // State Name
+  std::size_t id_;   // State ID
+  //bool in_transition_; // In Transition
+
+  std::map<TransitionEventPtr, StatePtr> transition_map_; // Transition Event Map
 };
-}
+
+//} // namespace FiniteStateMachine
 
 #endif // NOMAD_STATE_H_

@@ -29,46 +29,28 @@
 // Third Party Includes
 
 // Project Include Files
-#include <CrouchState.h>
+#include <IdleState.h>
 #include <StateTypes.h>
 
-CrouchState::CrouchState() : FiniteStateMachine::State("CROUCH", ControllerState::STATE_CROUCH)
+IdleState::IdleState() : FiniteStateMachine::State("IDLE", ControllerState::STATE_IDLE)
 {
 }
-void CrouchState::Run()
+void IdleState::Run()
 {
-    //   double time_now = g_world->getTime();
-    //   double h_t = crouch_traj_.Position(time_now - start_time_);
-
-    //   //std::cout << "H: " << h_t << "to: " << g_Controller->GetFootPosition()[2] << std::endl;
-    //   Eigen::Vector3d foot_pos_desired = start_pos_;
-    //   foot_pos_desired[2] = h_t;
-
-    //   g_Controller->SetCartesianPD(Eigen::Vector3d(3000,3000,3000), Eigen::Vector3d(200,200,200));
-    //   g_Controller->SetFootStateDesired(foot_pos_desired, Eigen::Vector3d::Zero());
 }
-void CrouchState::Enter()
+void IdleState::Enter()
 {
-    // next_state_ = this;
-
-    // // Cache Current Position
-    // start_pos_ = g_Controller->GetFootPosition();
-
-    // std::cout << "POS!: "<< start_pos_ << std::endl;
-    // // Compute Trajectory from Initial Foot to Stand Height
-    // double crouch_height = 0.1;
-    // crouch_traj_.Generate(start_pos_[2], -crouch_height, 0.0, 0.0, 0.0, 0.5);
-    // start_time_ = g_world->getTime();
+std::cout << "In Idle State" << std::endl;
 }
-bool CrouchState::Transition(std::shared_ptr<FiniteStateMachine::State> pNextState)
+bool IdleState::Transition(std::shared_ptr<FiniteStateMachine::State> pNextState)
 {
     // switch (pNextState->Id())
     // {
-    // case ControllerState::STATE_CROUCH:
-    //   std::cout << "Transition from Crouch to Crouch VALID" << std::endl;
-    //   break;
+    // // case ControllerState::STATE_CROUCH:
+    // //   std::cout << "Transition from Idle to Crouch VALID" << std::endl;
+    // //   break;
     // case ControllerState::STATE_STAND:
-    //   std::cout << "Transition from Crouch to Stand VALID" << std::endl;
+    //   std::cout << "Transition from Idle to Stand VALID" << std::endl;
     //   next_state_ = pNextState;
     //   break;
     // default:

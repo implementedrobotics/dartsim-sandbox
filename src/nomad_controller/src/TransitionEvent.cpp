@@ -1,5 +1,5 @@
 /*
- * CrouchState.h
+ * TransitionEvent.cpp
  *
  *  Created on: June 21, 2020
  *      Author: Quincy Jones
@@ -21,38 +21,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOMAD_CROUCH_STATE_H_
-#define NOMAD_CROUCH_STATE_H_
-
 // C System Files
 
 // C++ System Files
-#include <memory>
-#include <string>
+#include <iostream>
 
 // Third Party Includes
-#include <Eigen/Dense>
 
 // Project Include Files
 #include <State.h>
-#include <CubicPolynomialTrajectory.h>
 
-class CrouchState : public FiniteStateMachine::State
-{
 
-public:
-  CrouchState();
+    TransitionEvent::TransitionEvent(const std::string &name) 
+    : name_(name)
+    {
+      // Nothing to do
+    }
 
-  void Enter();                     // Default Do Nothing
-  void Exit();                      // Default Do Nothing
-
-  virtual bool Transition(std::shared_ptr<FiniteStateMachine::State> pNextState) = 0; // Force Transition
-  void Run(); // Override for state execution logic
-
-protected:
-    CubicPolynomialTrajectory crouch_traj_;
-    double start_time_;
-    Eigen::Vector3d start_pos_;
-};
-
-#endif // NOMAD_CROUCH_STATE_H_

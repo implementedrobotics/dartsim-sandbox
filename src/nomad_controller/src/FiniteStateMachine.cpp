@@ -31,26 +31,28 @@
 // Project Include Files
 #include <FiniteStateMachine.h>
 
-namespace FiniteStateMachine
-{
-    FiniteStateMachine::FiniteStateMachine(const std::string &name) : name_(name), current_state_(nullptr)
+
+    FiniteStateMachine::FiniteStateMachine(const std::string &name) 
+    : name_(name), 
+    current_state_(nullptr),
+    initial_state_(nullptr),
+    start_time_(0.0),
+    end_time_(0.0),
+    elapsed_time_(0.0),
+    cycle_count_(0.0)
     {
+        // Nothing to do here
     }
 
-    bool FiniteStateMachine::AddState(std::shared_ptr<State> state)
+    bool FiniteStateMachine::AddState(StatePtr state)
     {
-        //state->parent_ = this;
-        state_list_.emplace(state->Id(), state);
+        state_list_.push_back(state);
+        return true;
     }
 
-    bool FiniteStateMachine::SetDefaultState(std::shared_ptr<State> state)
+    bool FiniteStateMachine::SetInitialState(StatePtr state)
     {
-        default_state_ = current_state_ = state;
-    }
-
-    bool FiniteStateMachine::SetDefaultState(int stateId)
-    {
-        default_state_ = current_state_ = FindState(stateId);
+        initial_state_ = current_state_ = state;
     }
 
     bool FiniteStateMachine::Reset()
@@ -63,45 +65,62 @@ namespace FiniteStateMachine
 
     bool FiniteStateMachine::Start()
     {
-        current_state_ = default_state_;
+        cycle_count_ = 0;
+
+        // TODO: Should be get time
+        start_time_ = 0.0;
+        elapsed_time_ = 0.0;
+
+        current_state_ = initial_state_;
         current_state_->Enter();
     }
 
-    bool FiniteStateMachine::Run()
+    bool FiniteStateMachine::Stop()
     {
-        if (current_state_ == nullptr)
-        {
-            std::cout << "[ERROR]: Current state is NULL";
-        }
-
-        if (current_state_->InTransition()) // In Transition, run code
-        {
-            std::cout << "In state transition next state" << std::endl;
-            // TODO: Call state transition callbackk
-            //current_state_->RunTransition()
-        }
-        else if (current_state_ != current_state_->NextState()) // Transitioned, cleanup
-        {
-            // Transitioned
-            current_state_->Exit(); // Run State Exit Code
-            current_state_ = current_state_->NextState();
-            current_state_->Enter(); // Run State Entry Code
-            std::cout << "Successfully Transitioned to State: " << current_state_->Name() << std::endl;
-        }
-        else // Execute Normally
-        {
-            current_state_->Run();
-        }
+        // 
+        end_time_ = start_time_ + elapsed_time_;
     }
-    void FiniteStateMachine::TransitionTo(int state)
+    bool FiniteStateMachine::Run(double dt)
     {
-        current_state_->Transition(FindState(state));
+        // if (current_state_ == nullptr)
+        // {
+        //     std::cout << "[ERROR]: Current state is NULL";
+        // }
+
+        // if (current_state_->InTransition()) // In Transition, run code
+        // {
+        //     std::cout << "In state transition next state" << std::endl;
+        //     // TODO: Call state transition callbackk
+        //     //current_state_->RunTransition()
+        // }
+        // else if (current_state_ != current_state_->NextState()) // Transitioned, cleanup
+        // {
+        //     // Transitioned
+        //     current_state_->Exit(); // Run State Exit Code
+        //     current_state_ = current_state_->NextState();
+        //     current_state_->Enter(); // Run State Entry Code
+        //     std::cout << "Successfully Transitioned to State: " << current_state_->Name() << std::endl;
+        // }
+        // else // Execute Normally
+        // {
+        //     current_state_->Run();
+        // }
+
+        elapsed_time_ += dt;
+        cycle_count_++;
+    }
+    void FiniteStateMachine::TransitionTo(std::size_t state)
+    {
+        //current_state_->Transition(FindState(state));
     }
 
-    std::shared_ptr<State> FiniteStateMachine::FindState(int eStateId)
+    StatePtr FiniteStateMachine::FindState(const std::string &name)
     {
         // TODO: Check for valid key
-        return state_list_[eStateId];
+        return nullptr;//state_list_[eStateId];
     }
 
-} // namespace FiniteStateMachine
+    FiniteStateMachinePtr FiniteStateMachine::Create(const std::string& name)
+    {
+      return std::make_shared<FiniteStateMachine>(name);
+    };

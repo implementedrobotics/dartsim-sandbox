@@ -1,7 +1,7 @@
 /*
- * CrouchState.h
+ * TransitionEvent.h
  *
- *  Created on: June 21, 2020
+ *  Created on: June 22, 2020
  *      Author: Quincy Jones
  *
  * Copyright (c) <2020> <Quincy Jones - quincy@implementedrobotics.com/>
@@ -21,38 +21,53 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOMAD_CROUCH_STATE_H_
-#define NOMAD_CROUCH_STATE_H_
+#ifndef NOMAD_TRANSITIONEVENT_H_
+#define NOMAD_TRANSITIONEVENT_H_
 
 // C System Files
 
 // C++ System Files
 #include <memory>
 #include <string>
+#include <vector>
 
 // Third Party Includes
-#include <Eigen/Dense>
 
 // Project Include Files
 #include <State.h>
-#include <CubicPolynomialTrajectory.h>
 
-class CrouchState : public FiniteStateMachine::State
-{
 
-public:
-  CrouchState();
 
-  void Enter();                     // Default Do Nothing
-  void Exit();                      // Default Do Nothing
+//namespace FiniteStateMachine
+//{
+  class TransitionEvent;
 
-  virtual bool Transition(std::shared_ptr<FiniteStateMachine::State> pNextState) = 0; // Force Transition
-  void Run(); // Override for state execution logic
+  // Pointer type definition
+  using TransitionEventPtr = std::shared_ptr<TransitionEvent>;
 
-protected:
-    CubicPolynomialTrajectory crouch_traj_;
-    double start_time_;
-    Eigen::Vector3d start_pos_;
-};
+  // Transition Event Class
+  class TransitionEvent
+  {
+  public:
+    // Base Class Transition Event
+    // name = Transition Event name
+    TransitionEvent(const std::string &name);
 
-#endif // NOMAD_CROUCH_STATE_H_
+    // Get the name of this transition event
+    inline const std::string& GetName() const
+    {
+      return name_;
+    }
+
+    // Stop state machine and cleans up
+    virtual bool Triggered() = 0;
+
+  protected:
+    // State machine name
+    std::string name_;
+
+  };
+
+//} // namespace FiniteStateMachine
+
+#endif // NOMAD_TRANSITIONEVENT_H_

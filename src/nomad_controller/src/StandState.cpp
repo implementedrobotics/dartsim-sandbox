@@ -29,46 +29,53 @@
 // Third Party Includes
 
 // Project Include Files
-#include <CrouchState.h>
+#include <StandState.h>
 #include <StateTypes.h>
 
-CrouchState::CrouchState() : FiniteStateMachine::State("CROUCH", ControllerState::STATE_CROUCH)
+StandState::StandState() : FiniteStateMachine::State("STAND", ControllerState::STATE_STAND)
 {
 }
-void CrouchState::Run()
+void StandState::Run()
 {
-    //   double time_now = g_world->getTime();
-    //   double h_t = crouch_traj_.Position(time_now - start_time_);
+    // double time_now = g_world->getTime();
+    // double h_t = stand_traj_.Position(time_now - start_time_);
+    // double a_t = stand_traj_.Acceleration(time_now - start_time_);
 
-    //   //std::cout << "H: " << h_t << "to: " << g_Controller->GetFootPosition()[2] << std::endl;
-    //   Eigen::Vector3d foot_pos_desired = start_pos_;
-    //   foot_pos_desired[2] = h_t;
+    // //std::cout << "H: " << h_t << "to: " << g_Controller->GetFootPosition()[2] << std::endl;
+    // Eigen::Vector3d foot_pos_desired = start_pos_;
+    // foot_pos_desired[2] = h_t;
 
-    //   g_Controller->SetCartesianPD(Eigen::Vector3d(3000,3000,3000), Eigen::Vector3d(200,200,200));
-    //   g_Controller->SetFootStateDesired(foot_pos_desired, Eigen::Vector3d::Zero());
+    // g_Controller->SetCartesianPD(Eigen::Vector3d(125, 125, 125), Eigen::Vector3d(50, 50, 50));
+    // g_Controller->SetFootStateDesired(foot_pos_desired, Eigen::Vector3d::Zero());
+
+    // // F = ma
+    // Eigen::Vector3d force_ff = g_Controller->Skeleton()->getMass() * Eigen::Vector3d(0, 0, -9.81);
+    // if (time_now - start_time_ <= 1.0)
+    // {
+    //     //std::cout << g_Controller->Skeleton()->getMass() << " : " << std::endl;
+    //     force_ff += g_Controller->Skeleton()->getMass() * Eigen::Vector3d(0, 0, -a_t);
+    // }
+    // g_Controller->SetForceFeedForward(force_ff);
 }
-void CrouchState::Enter()
+void StandState::Enter()
 {
-    // next_state_ = this;
-
+    // next_state_ = this; 
     // // Cache Current Position
     // start_pos_ = g_Controller->GetFootPosition();
-
-    // std::cout << "POS!: "<< start_pos_ << std::endl;
     // // Compute Trajectory from Initial Foot to Stand Height
-    // double crouch_height = 0.1;
-    // crouch_traj_.Generate(start_pos_[2], -crouch_height, 0.0, 0.0, 0.0, 0.5);
+    // double stand_height = .41;
+    // stand_traj_.Generate(start_pos_[2], -stand_height, 0.0, 0.0, 0.0, 1.0);
     // start_time_ = g_world->getTime();
 }
-bool CrouchState::Transition(std::shared_ptr<FiniteStateMachine::State> pNextState)
+bool StandState::Transition(std::shared_ptr<FiniteStateMachine::State> pNextState)
 {
     // switch (pNextState->Id())
     // {
-    // case ControllerState::STATE_CROUCH:
-    //   std::cout << "Transition from Crouch to Crouch VALID" << std::endl;
-    //   break;
     // case ControllerState::STATE_STAND:
-    //   std::cout << "Transition from Crouch to Stand VALID" << std::endl;
+    //   std::cout << "Transition from Stand to Stand VALID" << std::endl;
+    //   break;
+    // case ControllerState::STATE_CROUCH:
+    //   std::cout << "Transition from Stand to Crouch VALID" << std::endl;
     //   next_state_ = pNextState;
     //   break;
     // default:
