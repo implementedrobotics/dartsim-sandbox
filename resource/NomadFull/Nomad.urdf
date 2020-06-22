@@ -542,41 +542,47 @@
   <origin rpy="0 0 0" xyz="0.002 0.0 0.0"/>
   <parent link="b_haa_motor_FL"/>
   <child link="b_hfe_motor_FL"/>
-  <axis xyz="1.0 0.0 0.0"/>
+  <dynamics damping="0.2" friction="0"/>
+  <axis xyz="-1.0 0.0 0.0"/>
 </joint>
 
 <joint name="j_haa_FR" type="continuous">
   <origin rpy="0 0 0" xyz="0.002 0.0 0.0"/>
   <parent link="b_haa_motor_FR"/>
   <child link="b_hfe_motor_FR"/>
-  <axis xyz="1.0 0.0 -0.0"/>
+  <dynamics damping="0.2" friction="0"/>
+  <axis xyz="-1.0 0.0 -0.0"/>
 </joint>
 
 <joint name="j_haa_RL" type="continuous">
   <origin rpy="0 0 0" xyz="-0.002 0.0 0.0"/>
   <parent link="b_haa_motor_RL"/>
   <child link="b_hfe_motor_RL"/>
-  <axis xyz="-1.0 -0.0 -0.0"/>
+  <dynamics damping="0.2" friction="0"/>
+  <axis xyz="1.0 -0.0 -0.0"/>
 </joint>
 
 <joint name="j_haa_RR" type="continuous">
   <origin rpy="0 0 0" xyz="-0.002 0.0 0.0"/>
   <parent link="b_haa_motor_RR"/>
   <child link="b_hfe_motor_RR"/>
-  <axis xyz="-1.0 -0.0 -0.0"/>
+  <dynamics damping="0.2" friction="0"/>
+  <axis xyz="1.0 -0.0 -0.0"/>
 </joint>
 
 <joint name="j_hfe_FL" type="continuous">
   <origin rpy="0 0 0" xyz="0.058 0.0245 0.0"/>
   <parent link="b_hfe_motor_FL"/>
   <child link="b_kfe_motor_FL"/>
-  <axis xyz="-0.0 1.0 0.0"/>
+  <dynamics damping="0.2" friction="0"/>
+  <axis xyz="-0.0 -1.0 0.0"/>
 </joint>
 
 <joint name="j_hfe_RL" type="continuous">
   <origin rpy="0 0 0" xyz="-0.058 0.0245 -0.0"/>
   <parent link="b_hfe_motor_RL"/>
   <child link="b_kfe_motor_RL"/>
+  <dynamics damping="0.2" friction="0"/>
   <axis xyz="-0.0 -1.0 0.0"/>
 </joint>
 
@@ -584,35 +590,37 @@
   <origin rpy="0 0 0" xyz="-0.058 -0.0245 -0.0"/>
   <parent link="b_hfe_motor_RR"/>
   <child link="b_kfe_motor_RR"/>
-  <axis xyz="0.0 -1.0 -0.0"/>
+  <dynamics damping="0.2" friction="0"/>
+  <axis xyz="0.0 1.0 -0.0"/>
 </joint>
 
 <joint name="j_hfe_FR" type="continuous">
   <origin rpy="0 0 0" xyz="0.058 -0.0245 0.0"/>
   <parent link="b_hfe_motor_FR"/>
   <child link="b_kfe_motor_FR"/>
+  <dynamics damping="0.2" friction="0"/>
   <axis xyz="0.0 1.0 0.0"/>
 </joint>
 
-<joint name="j_hfe_to_upper_leg_FL" type="fixed">
+<joint name="j_hfe_to_shoulder_FL" type="fixed">
   <origin rpy="0 0 0" xyz="0.0 0.064 0.0"/>
   <parent link="b_kfe_motor_FL"/>
   <child link="b_upper_leg_FL"/>
 </joint>
 
-<joint name="j_hfe_to_upper_leg_RL" type="fixed">
+<joint name="j_hfe_to_shoulder_RL" type="fixed">
   <origin rpy="0 0 0" xyz="0.0 0.064 0.0"/>
   <parent link="b_kfe_motor_RL"/>
   <child link="b_upper_leg_RL"/>
 </joint>
 
-<joint name="j_hfe_to_upper_leg_RR" type="fixed">
+<joint name="j_hfe_to_shoulder_RR" type="fixed">
   <origin rpy="0 0 0" xyz="0.0 -0.064 0.0"/>
   <parent link="b_kfe_motor_RR"/>
   <child link="b_upper_leg_RR"/>
 </joint>
 
-<joint name="j_hfe_to_upper_leg_FR" type="fixed">
+<joint name="j_hfe_to_shoulder_FR" type="fixed">
   <origin rpy="0 0 0" xyz="0.0 -0.064 0.0"/>
   <parent link="b_kfe_motor_FR"/>
   <child link="b_upper_leg_FR"/>
@@ -622,6 +630,7 @@
   <origin rpy="0 0 0" xyz="-0.00018 -0.004 -0.25"/>
   <parent link="b_upper_leg_FL"/>
   <child link="b_lower_leg_FL"/>
+  <dynamics damping="0.2" friction="0"/>
   <axis xyz="0.0 -1.0 0.0"/>
 </joint>
 
@@ -629,6 +638,7 @@
   <origin rpy="0 0 0" xyz="-0.00018 -0.004 -0.25"/>
   <parent link="b_upper_leg_RL"/>
   <child link="b_lower_leg_RL"/>
+  <dynamics damping="0.2" friction="0"/>
   <axis xyz="-0.0 -1.0 -0.0"/>
 </joint>
 
@@ -636,14 +646,16 @@
   <origin rpy="0 0 0" xyz="-0.00018 0.004 -0.25"/>
   <parent link="b_upper_leg_FR"/>
   <child link="b_lower_leg_FR"/>
-  <axis xyz="-0.0 -1.0 -0.0"/>
+  <dynamics damping="0.2" friction="0"/>
+  <axis xyz="-0.0 1.0 -0.0"/>
 </joint>
 
 <joint name="j_kfe_RR" type="continuous">
   <origin rpy="0 0 0" xyz="-0.00018 0.004 -0.25"/>
   <parent link="b_upper_leg_RR"/>
   <child link="b_lower_leg_RR"/>
-  <axis xyz="0.0 -1.0 0.0"/>
+  <dynamics damping="0.2" friction="0"/>
+  <axis xyz="0.0 1.0 0.0"/>
 </joint>
 
 <joint name="j_base_link_haa_FR" type="fixed">

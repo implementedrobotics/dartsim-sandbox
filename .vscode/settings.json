@@ -78,6 +78,7 @@
         "cinttypes": "cpp",
         "referenced": "cpp",
         "guieventadapter": "cpp",
-        "eventqueue": "cpp"
+        "eventqueue": "cpp",
+        "state": "cpp"
     }
 }

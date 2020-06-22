@@ -8,3 +8,4 @@ project(Dart_Tests)
 #enable_testing()
 
 add_subdirectory(src)
+add_subdirectory(src/nomad_controller)
