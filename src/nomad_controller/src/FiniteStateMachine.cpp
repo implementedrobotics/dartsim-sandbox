@@ -82,32 +82,44 @@
     }
     bool FiniteStateMachine::Run(double dt)
     {
-        // if (current_state_ == nullptr)
-        // {
-        //     std::cout << "[ERROR]: Current state is NULL";
-        // }
+         if (current_state_ == nullptr)
+         {
+             std::cout << "[ERROR]: Current state is NULL";
+             return false;
+         }
 
-        // if (current_state_->InTransition()) // In Transition, run code
+        if(current_state_->ReadyToTransition())
+        {
+            std::cout << "State ready to transition" << std::endl;
+            TransitionTo(current_state_->NextState());
+        }
+                // else if (current_state_->InTransition()) // In Transition, run code
         // {
         //     std::cout << "In state transition next state" << std::endl;
         //     // TODO: Call state transition callbackk
         //     //current_state_->RunTransition()
         // }
-        // else if (current_state_ != current_state_->NextState()) // Transitioned, cleanup
-        // {
-        //     // Transitioned
-        //     current_state_->Exit(); // Run State Exit Code
-        //     current_state_ = current_state_->NextState();
-        //     current_state_->Enter(); // Run State Entry Code
-        //     std::cout << "Successfully Transitioned to State: " << current_state_->Name() << std::endl;
-        // }
-        // else // Execute Normally
-        // {
-        //     current_state_->Run();
-        // }
+        else
+        {
+            current_state_->Run();
+        }
+        
+
+
+
 
         elapsed_time_ += dt;
         cycle_count_++;
+    }
+    void FiniteStateMachine::TransitionTo(const StatePtr &state)
+    {
+        std::cout << "Transition From: " << current_state_->GetName() << " to: " << state->GetName() << std::endl;
+        current_state_->Exit();
+
+        current_state_ = state;
+
+        current_state_->Enter();
+
     }
     void FiniteStateMachine::TransitionTo(std::size_t state)
     {

@@ -397,23 +397,43 @@ public:
   {
     std::cout << "State Machine RUN" << std::endl;
   }
-
 };
+
+  class StandEvent : public TransitionEvent
+  {
+  public:
+    // Base Class Transition Event
+    // name = Transition Event name
+    StandEvent() : TransitionEvent("STAND EVENT")
+    {
+
+    }
+
+    // Stop state machine and cleans up
+    bool Triggered(){return true;};
+
+  };
 
 int main(int argc, char *argv[])
 {
  
+ // TODO: Key Event Struct Blah
   FiniteStateMachinePtr test = FiniteStateMachine::Create("Test");
 
   std::shared_ptr<IdleState> idle = std::make_shared<IdleState>();
 
-  TransitionEventPtr transition = std::make_shared<TransitionEvent>("Default");
+  std::shared_ptr<StandEvent> transition = std::make_shared<StandEvent>();
   idle->AddTransitionEvent(transition, idle);
 
   test->AddState(idle);
   test->SetInitialState(idle);
 
   test->Start();
+
+  for(int i =0;i<10000;i++)
+  {
+      test->Run(0.01);
+  }
 //   // Create dart simulation world
 //   g_world = World::create();
 

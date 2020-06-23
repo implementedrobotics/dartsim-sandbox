@@ -89,16 +89,23 @@ public:
   virtual void Run() = 0;
 
   // Next State to transition to
-  StatePtr NextState();
+  const StatePtr& NextState() const;
 
   // TODO: Valid state transition?
 
 protected:
-  std::string name_; // State Name
-  std::size_t id_;   // State ID
+
+  // State name
+  std::string name_;
+  // State id
+  std::size_t id_;
+  
+  // Next state
+  StatePtr next_state_; 
   //bool in_transition_; // In Transition
 
-  std::map<TransitionEventPtr, StatePtr> transition_map_; // Transition Event Map
+  // Transition Event Map
+  std::map<TransitionEventPtr, StatePtr> transition_map_; 
 };
 
 //} // namespace FiniteStateMachine

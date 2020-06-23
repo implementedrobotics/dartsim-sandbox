@@ -45,14 +45,13 @@
 
     void State::Enter() 
     {
-        // Nothing to do
+
     }
 
     void State::Exit()
     {
         // Nothing to do
     }
-
     void State::AddTransitionEvent(TransitionEventPtr event, StatePtr next_state)
     {
         transition_map_.emplace(event, next_state);
@@ -60,13 +59,21 @@
     bool State::ReadyToTransition()
     {
         // Loop transition maps for active events and then start transition
+        for (auto transition: transition_map_) 
+        {
+            TransitionEventPtr event = transition.first;
+            if(event->Triggered())
+            {
+                next_state_ = transition.second;
+                return true;
+            }
+        }   
         return false;
     }
 
-
     // Next State to transition to
-    StatePtr State::NextState()
+    const StatePtr& State::NextState() const
     {
-
+        return next_state_;
     }
 
