@@ -5,7 +5,8 @@ set(NOMAD_CONTROLLER_SOURCES ${PROJECT_SOURCE_DIR}/src/nomad_controller/src/Fini
 ${PROJECT_SOURCE_DIR}/src/nomad_controller/src/State.cpp
 ${PROJECT_SOURCE_DIR}/src/nomad_controller/src/TransitionEvent.cpp
 ${PROJECT_SOURCE_DIR}/src/nomad_controller/src/nomad_controller.cpp
-
+${PROJECT_SOURCE_DIR}/src/nomad_controller/src/NomadRobot.cpp
+${PROJECT_SOURCE_DIR}/src/nomad_controller/src/NomadPrimaryControlFSM.cpp
 #${PROJECT_SOURCE_DIR}/src/nomad_controller/src/CrouchState.cpp
 #${PROJECT_SOURCE_DIR}/src/nomad_controller/src/StandState.cpp
 #${PROJECT_SOURCE_DIR}/src/nomad_controller/src/IdleState.cpp

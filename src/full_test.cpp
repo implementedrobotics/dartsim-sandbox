@@ -778,13 +778,13 @@ int main(int argc, char *argv[])
   Eigen::Vector3d gravity(0.0, 0.0, -9.81);
   g_world->setGravity(gravity);
 
-  // Create and add ground to world
-  SkeletonPtr ground = CreateGround();
-  g_world->addSkeleton(ground);
+  // // Create and add ground to world
+  // SkeletonPtr ground = CreateGround();
+  // g_world->addSkeleton(ground);
 
-  // Create and add Nomad test robot to world
-  g_nomad = LoadNomad();
-  g_world->addSkeleton(g_nomad);
+  // // Create and add Nomad test robot to world
+  // g_nomad = LoadNomad();
+  // g_world->addSkeleton(g_nomad);
 
 //   // Add Controller
 //   g_Controller = new LegController(nomad);
