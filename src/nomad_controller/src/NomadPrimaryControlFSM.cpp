@@ -27,15 +27,20 @@
 #include <iostream>
 
 // Third Party Includes
-#include <dart/gui/osg/osg.hpp>
 
 // Project Include Files
 #include <NomadControlData.h>
 #include <NomadPrimaryControlFSM.h>
+#include <TransitionEvent.h>
 
+// Transition Events For States
+NomadTransitionEvent::NomadTransitionEvent(const std::string &name, std::shared_ptr<NomadControlData> control_data)
+    : TransitionEvent(name), control_DATA_(control_data)
+{
+    control_DATA_ = control_data;
+}
 
-int key_event2;
-
+// States
 class IdleState : public State
 {
 
@@ -48,38 +53,62 @@ public:
     }
     void Exit()
     {
-        std::cout << "Entering State EXIT" << std::endl;
+        std::cout << "Exiting State IDLE" << std::endl;
     }
 
     void Run()
     {
-        std::cout << "State Machine RUN" << std::endl;
+        // std::cout << "State Machine RUN" << std::endl;
     }
 };
 
-class KeyboardEvent : public TransitionEvent
+class StandState : public State
+{
+
+public:
+    StandState() : State("Stand", 1) {}
+
+    void Enter()
+    {
+        std::cout << "Entering State STAND" << std::endl;
+    }
+    void Exit()
+    {
+        std::cout << "Exiting State STAND" << std::endl;
+    }
+
+    void Run()
+    {
+        // std::cout << "State Machine RUN" << std::endl;
+    }
+};
+
+// Transitions
+class CommandRequestEvent : public NomadTransitionEvent
 {
 public:
     // Base Class Transition Event
     // name = Transition Event name
-    KeyboardEvent(int *key_event) : TransitionEvent("STAND EVENT"), key_event_(key_event)
+    CommandRequestEvent(const std::string &name, CONTROL_MODE mode, std::shared_ptr<NomadControlData> control_data) : NomadTransitionEvent(name, control_data), req_mode_(mode)
     {
     }
 
     // Stop state machine and cleans up
     bool Triggered()
     {
-        std::cout << "Event: " << *key_event_ << std::endl;
-        if (*key_event_ == ::osgGA::GUIEventAdapter::KEY_S)
+        if (control_DATA_->control_mode_ == req_mode_)
+        {
+            std::cout << "Event ID: " << name_ << " is SET!" << std::endl;
             return true;
+        }
         return false;
     };
 
 protected:
-    int *key_event_;
+    CONTROL_MODE req_mode_;
 };
 
-NomadPrimaryControlFSM::NomadPrimaryControlFSM() : FiniteStateMachine("Nomad Primary Control FSM")
+NomadPrimaryControlFSM::NomadPrimaryControlFSM(std::shared_ptr<NomadControlData> control_DATA) : FiniteStateMachine("Nomad Primary Control FSM"), control_DATA_(control_DATA)
 {
     _CreateFSM();
 }
@@ -89,14 +118,26 @@ void NomadPrimaryControlFSM::_CreateFSM()
     //nomad_control_FSM_ = std::make_unique<NomadPrimaryControlFSM>();
     std::cout << "Creating FSM in NPCFSM" << std::endl;
 
+    ///////////////////////// Define Our States
+    // Idle
     std::shared_ptr<IdleState> idle = std::make_shared<IdleState>();
+    // Stand
+    std::shared_ptr<StandState> stand = std::make_shared<StandState>();
 
+    std::shared_ptr<CommandRequestEvent> transitionStand = std::make_shared<CommandRequestEvent>("STAND TRANSITION", CONTROL_MODE::STAND, control_DATA_);
+    std::shared_ptr<CommandRequestEvent> transitionIdle = std::make_shared<CommandRequestEvent>("IDLE TRANSITION", CONTROL_MODE::IDLE, control_DATA_);
 
-    std::shared_ptr<KeyboardEvent> transition = std::make_shared<KeyboardEvent>(&key_event2);
-    idle->AddTransitionEvent(transition, idle);
+    // Setup Transitions
+    idle->AddTransitionEvent(transitionStand, stand);
+    stand->AddTransitionEvent(transitionIdle, idle);
 
+    // Add the state to the FSM
     AddState(idle);
+    AddState(stand);
+
+    // Set Initials State
     SetInitialState(idle);
 
+    // Start the state machine
     Start();
 }

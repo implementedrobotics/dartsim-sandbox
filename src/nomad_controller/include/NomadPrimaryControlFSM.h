@@ -32,17 +32,30 @@
 
 // Project Include Files
 #include <FiniteStateMachine.h>
+#include <NomadControlData.h>
 
 // Finite State Machine Class
 class NomadPrimaryControlFSM : public FiniteStateMachine
 {
 public:
   // Base Class Finite State Machine
-  NomadPrimaryControlFSM();
+  NomadPrimaryControlFSM(std::shared_ptr<NomadControlData> control_DATA);
 
 protected:
   //Helper function to create state machine
   void _CreateFSM();
+
+  std::shared_ptr<NomadControlData>  control_DATA_;
+
+};
+
+class NomadTransitionEvent : public TransitionEvent
+{
+  public:
+    NomadTransitionEvent(const std::string &name, std::shared_ptr<NomadControlData> control_data);
+
+  protected:
+    std::shared_ptr<NomadControlData> control_DATA_;
 };
 
 #endif // NOMAD_PRIMARYCONTROLFINITESTATEMACHINE_H_

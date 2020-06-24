@@ -30,6 +30,7 @@
 
 // Third Party Includes
 #include <Eigen/Dense>
+
 // Project Include Files
 
 
@@ -43,6 +44,7 @@ typedef enum {
   ESTOP = 6
 } CONTROL_MODE;
 
+//const char *CONTROL_MODE_NAME2[] = {"IDLE", "PASSIVE", "STAND", "BALANCE", "LOCOMOTION", "JUMP", "ESTOP"};
 
 // Struct to hold relevant control data 
 struct NomadControlData

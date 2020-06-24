@@ -104,16 +104,12 @@
             current_state_->Run();
         }
         
-
-
-
-
         elapsed_time_ += dt;
         cycle_count_++;
     }
     void FiniteStateMachine::TransitionTo(const StatePtr &state)
     {
-        std::cout << "Transition From: " << current_state_->GetName() << " to: " << state->GetName() << std::endl;
+        std::cout << "Transition From: [" << current_state_->GetName() << "] --> [" << state->GetName() << "]" << std::endl;
         current_state_->Exit();
 
         current_state_ = state;

@@ -31,10 +31,9 @@
 // Project Include Files
 #include <State.h>
 
-
-    TransitionEvent::TransitionEvent(const std::string &name) 
+TransitionEvent::TransitionEvent(const std::string &name)
     : name_(name)
-    {
-      // Nothing to do
-    }
+{
+  // Nothing to do
+}
 

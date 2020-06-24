@@ -35,14 +35,17 @@
 // Project Include Files
 #include <NomadPrimaryControlFSM.h>
 #include <NomadControlData.h>
+#include <NomadLegController.h>
 
 // Nomad Robot Class
 class NomadRobot
 {
+
 public:
   // Base Class Nomad Robot
   NomadRobot(const dart::simulation::WorldPtr world);
   void LoadFromURDF(const std::string &urdf);
+  void CreateLegControllers();
 
   void ProcessInputs();
   void Run(double dt);
@@ -53,9 +56,12 @@ public:
   void SetInitialPose();
   void Reset();
 
+  void SetKeyEvent(int *key_event);
+
 protected:
   
   void _CreateFSM();
+
   dart::dynamics::SkeletonPtr robot_;
   dart::simulation::WorldPtr world_;
   std::unique_ptr<NomadPrimaryControlFSM> nomad_control_FSM_;
@@ -66,6 +72,8 @@ protected:
 
   // Inputs Vector
   Eigen::VectorXd U_;
+
+  int *key_event_;
 };
 
 #endif // NOMAD_ROBOT_H_

@@ -10,13 +10,9 @@
 
 #include <vector>
 
-
-
 #include <FiniteStateMachine.h>
 #include <TransitionEvent.h>
 #include <State.h>
-
-
 
 #include <NomadRobot.h>
 
@@ -25,142 +21,14 @@ using namespace dart::simulation;
 
 SimpleFramePtr g_hip_target;
 WorldPtr g_world;
-//SkeletonPtr g_nomad;
-double g_stand_height = 0.4f;
-
-
-//double max_torque = 0.0;
-
 
 int g_key_event;
-//FiniteStateMachinePtr g_FSM;
+
 std::shared_ptr<NomadRobot> g_nomad;
 
 // Robot Class
 // Dynamic State Vector
 // Floating Base Class
-
-// class LegController
-// {
-//     public:
-//         LegController(SkeletonPtr &legSkeleton) : leg_skeleton_(legSkeleton)
-//         {
-//             Reset();
-//             hfe_body_ = leg_skeleton_->getBodyNode("hfe_motor");
-//             foot_body_ = leg_skeleton_->getBodyNode("foot");
-//         }
-//         void Reset()
-//         {
-//             k_P_cartesian_ = Eigen::Matrix3d::Zero();
-//             k_D_cartesian_ = Eigen::Matrix3d::Zero();
-
-//             k_P_joint_ = Eigen::Matrix3d::Zero();
-//             k_D_joint_ = Eigen::Matrix3d::Zero();
-
-//             foot_pos_desired_ = Eigen::Vector3d::Zero();
-//             foot_vel_desired_ = Eigen::Vector3d::Zero();
-
-//             q_desired_ = Eigen::Vector3d::Zero();
-//             qd_desired_ = Eigen::Vector3d::Zero();
-//             tau_feedforward_ = Eigen::Vector3d::Zero();
-
-//             force_feedforward_ = Eigen::Vector3d::Zero();
-//         }
-
-//         void SetCartesianPD(const Eigen::Vector3d& k_P, const Eigen::Vector3d& k_D)
-//         {
-//             k_P_cartesian_ = k_P.asDiagonal();
-//             k_D_cartesian_ = k_D.asDiagonal();
-//         }
-
-//         void SetJointPD(const Eigen::Vector3d& k_P, const Eigen::Vector3d& k_D)
-//         {
-//             k_P_joint_ = k_P.asDiagonal();
-//             k_D_joint_ = k_D.asDiagonal();
-//         }
-
-//         void SetFootStateDesired(const Eigen::Vector3d &posDesired, const Eigen::Vector3d &velDesired)
-//         {
-//             foot_pos_desired_ = posDesired;
-//             foot_vel_desired_ = velDesired;
-//         }
-//         void SetForceFeedForward(const Eigen::Vector3d &force)
-//         {
-//             force_feedforward_ = force;
-//         }
-//         const Eigen::Vector3d& GetFootPosition()
-//         {
-//           return foot_pos_;
-//         }
-//         void Run()
-//         {
-//             // Compute Feed Forwards
-//             Eigen::Vector3d tau_output;
-//             Eigen::Vector3d force_output;
-
-//             tau_output = tau_feedforward_;
-//             force_output = force_feedforward_;
-//             force_output += k_P_cartesian_ * (foot_pos_desired_ - foot_pos_);
-//             force_output += k_D_cartesian_ * (foot_vel_desired_ - foot_vel_);
-//            // std::cout << leg_skeleton_->getGravityForces() << std::endl;
-
-//             // Convert to Joint Torques
-//             tau_output += J_.transpose() * force_output;
-
-//             //std::cout << tau_output << std::endl;
-//             //max_torque = std::max(max_torque, tau_output[2]);
-//             //std::cout << max_torque << std::endl;
-//             // Technically sets a force on the unactuated joint = 0.  Just be aware. I think we are just lucky it happens
-//             // to match 3dof even though this leg setup is 2dof
-//             leg_skeleton_->setForces(tau_output);
-//         }
-
-//         void UpdateState()
-//         {
-//             // Compute Jacobian (Linear)  TODO: Do we want the full Jacobian with angular velocities?
-//             J_ = leg_skeleton_->getLinearJacobian(foot_body_, hfe_body_);
-
-//             foot_pos_ = foot_body_->getTransform(hfe_body_).translation();
-//             foot_vel_ = J_ * leg_skeleton_->getVelocities();
-
-//             // This is the same, but like using the jacobian better as it is more generic
-//             // TODO: See if linearvelocity is faster/cached for some reason
-//             //foot_vel_ = foot_body_->getLinearVelocity(hfe_body_, hfe_body_);
-//         }
-
-//         const SkeletonPtr& Skeleton() 
-//         {
-//           return leg_skeleton_;
-//         }
-//     protected:
-//         SkeletonPtr leg_skeleton_;  
-//         BodyNodePtr hfe_body_;
-//         BodyNodePtr foot_body_;
-
-//         Eigen::Matrix3d  k_P_joint_;
-//         Eigen::Matrix3d  k_D_joint_;
-//         Eigen::Matrix3d  k_P_cartesian_;
-//         Eigen::Matrix3d  k_D_cartesian_;
-
-//         Eigen::Vector3d foot_pos_desired_;
-//         Eigen::Vector3d foot_vel_desired_;
-
-//         Eigen::Vector3d foot_pos_;
-//         Eigen::Vector3d foot_vel_;
-        
-//         Eigen::Vector3d q_desired_; // 3Dof Leg
-//         Eigen::Vector3d qd_desired_; // 3Dof Leg
-
-//         Eigen::Vector3d q_;
-//         Eigen::Vector3d qd_;
-
-//         Eigen::Vector3d force_feedforward_;
-//         Eigen::Vector3d tau_feedforward_;
-
-//         Eigen::MatrixXd J_; // Leg Jacobian
-// };
-
-// LegController *g_Controller;
 
 class NomadSimWorldNode : public dart::gui::osg::RealTimeWorldNode
 {
@@ -184,11 +52,9 @@ public:
   void customPreStep()
   {
 
-   // std::cout << leg->getJoint("leg_to_world")->getPosition(0) << std::endl;
-    if(step_iter < 5)
-      return; 
-
-
+    // std::cout << leg->getJoint("leg_to_world")->getPosition(0) << std::endl;
+    if (step_iter < 5)
+      return;
 
     nomad_->ProcessInputs();
     nomad_->Run(world_->getTimeStep());
@@ -196,10 +62,10 @@ public:
 
     // Setup
     // Reset Command
-   // g_Controller->Reset();
+    // g_Controller->Reset();
 
     // Run State Machine
-   // g_FSM->Run(0.05);
+    // g_FSM->Run(0.05);
 
     //g_Controller->SetForceFeedForward(Eigen::Vector3d(0,0,-88));
 
@@ -207,7 +73,6 @@ public:
     //g_Controller->Run();
 
     // Post Setup
-
   }
 
   void customPostStep()
@@ -216,7 +81,7 @@ public:
     // step is performed. This function can be deleted if it does not need
     // to be used.
     //g_Controller->UpdateState();
-    //g_key_event = 0;
+    g_key_event = 0;
     step_iter++;
   }
 
@@ -244,7 +109,6 @@ public:
     {
       return false;
     }
-
     if (ea.getEventType() == osgGA::GUIEventAdapter::KEYDOWN)
     {
       g_key_event = ea.getKey();
@@ -253,14 +117,14 @@ public:
       {
         std::cout << "Arrow Key Up!" << std::endl;
 
-      //   Eigen::Vector3d hipOffset = g_hip_target->getWorldTransform().translation();
-      //   hipOffset = hipOffset + Eigen::Vector3d(0, 0, 0.01);
-      //   g_hip_target->setTranslation(hipOffset);
+        //   Eigen::Vector3d hipOffset = g_hip_target->getWorldTransform().translation();
+        //   hipOffset = hipOffset + Eigen::Vector3d(0, 0, 0.01);
+        //   g_hip_target->setTranslation(hipOffset);
 
-      // //  std::cout << g_hip_target->getWorldTransform().translation() << std::endl;
+        // //  std::cout << g_hip_target->getWorldTransform().translation() << std::endl;
 
-      // //  std::cout << g_hip_target->getTransform(nomad_->getBodyNode("base_link")).translation() << std::endl;
-      // //  std::cout << "Done " << std::endl;
+        // //  std::cout << g_hip_target->getTransform(nomad_->getBodyNode("base_link")).translation() << std::endl;
+        // //  std::cout << "Done " << std::endl;
       }
       else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_Down)
       {
@@ -286,26 +150,26 @@ public:
       // }
       else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_E)
       {
-       // nomad_->getBodyNode("hfe_motor")->addExtForce(Eigen::Vector3d(0,0,-5000), Eigen::Vector3d::Zero(), true, true);
+        // nomad_->getBodyNode("hfe_motor")->addExtForce(Eigen::Vector3d(0,0,-5000), Eigen::Vector3d::Zero(), true, true);
       }
     }
-    else if(ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
+    else if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
     {
       g_key_event = 0;
     }
   }
 
-   void Reset()
-   {
-     //SetInitialPosition(nomad_);
-   }
+  void Reset()
+  {
+    //SetInitialPosition(nomad_);
+  }
 
- protected:
-   dart::gui::osg::Viewer *viewer_;
-   NomadSimWorldNode *world_node_;
-   std::shared_ptr<NomadRobot> nomad_;
-   double hip_target_offset;
- };
+protected:
+  dart::gui::osg::Viewer *viewer_;
+  NomadSimWorldNode *world_node_;
+  std::shared_ptr<NomadRobot> nomad_;
+  double hip_target_offset;
+};
 
 dart::gui::osg::InteractiveFramePtr
 create_interactive_frame(dart::dynamics::Frame *frame, const std::string name)
@@ -349,33 +213,19 @@ SkeletonPtr CreateGround()
   return ground;
 }
 
-
-
 int main(int argc, char *argv[])
 {
- 
-  // g_FSM = FiniteStateMachine::Create("Test");
 
-  // std::shared_ptr<IdleState> idle = std::make_shared<IdleState>();
+  // Create dart simulation world
+  g_world = World::create();
 
-  // std::shared_ptr<KeyboardEvent> transition = std::make_shared<KeyboardEvent>(&g_key_event);
-  // idle->AddTransitionEvent(transition, idle);
+  // Update Gravity vector to Z down
+  Eigen::Vector3d gravity(0.0, 0.0, -9.81);
+  g_world->setGravity(gravity);
 
-  // g_FSM->AddState(idle);
-  // g_FSM->SetInitialState(idle);
-
-  // g_FSM->Start();
-
-   // Create dart simulation world
-   g_world = World::create();
-
-   // Update Gravity vector to Z down
-   Eigen::Vector3d gravity(0.0, 0.0, -9.81);
-   g_world->setGravity(gravity);
-
-   // Create and add ground to world
-   SkeletonPtr ground = CreateGround();
-   g_world->addSkeleton(ground);
+  // Create and add ground to world
+  SkeletonPtr ground = CreateGround();
+  g_world->addSkeleton(ground);
 
   g_nomad = std::make_shared<NomadRobot>(g_world);
 
@@ -384,59 +234,48 @@ int main(int argc, char *argv[])
 
   g_nomad->LoadFromURDF(urdf);
   g_nomad->SetInitialPose();
-//  return 0;
-   // Create and add Nomad test robot to world
-   //g_nomad = LoadNomad();
-   //g_world->addSkeleton(g_nomad);
+  g_nomad->SetKeyEvent(&g_key_event);
 
-// //   // Add Controller
-// //   g_Controller = new LegController(nomad);
-// //   g_Controller->Reset();
+  g_nomad->CreateLegControllers();
+  // //   // Add Controller
+  // //   g_Controller = new LegController(nomad);
+  // //   g_Controller->Reset();
 
-// //   g_FSM = new FiniteStateMachine("Control FSM");
+  // Create osg world node
+  ::osg::ref_ptr<NomadSimWorldNode> node = new NomadSimWorldNode(g_world, g_nomad);
 
-// //   // TODO: This will be in constructor of subclasses FSM
-// //   g_FSM->AddState(new CrouchState());
-// //   g_FSM->AddState(new StandState());
-// //   g_FSM->AddState(new IdleState());
-// //   g_FSM->SetDefaultState(ControllerState::STATE_IDLE);
-// //   g_FSM->Reset();
+  // Create osg Viewer
+  dart::gui::osg::Viewer viewer = dart::gui::osg::Viewer();
+  viewer.addWorldNode(node);
 
-   // Create osg world node
-   ::osg::ref_ptr<NomadSimWorldNode> node = new NomadSimWorldNode(g_world, g_nomad);
+  // Default with Headlights
+  viewer.switchHeadlights(false);
 
-   // Create osg Viewer
-   dart::gui::osg::Viewer viewer = dart::gui::osg::Viewer();
-   viewer.addWorldNode(node);
+  //Add Grid Attachment
+  ::osg::ref_ptr<dart::gui::osg::GridVisual> grid = new dart::gui::osg::GridVisual();
 
-   // Default with Headlights
-   viewer.switchHeadlights(false);
+  viewer.addAttachment(grid);
+  // Add input handler
+  viewer.addEventHandler(new NomadInputHandler(&viewer, node, g_nomad));
 
-   //Add Grid Attachment
-   ::osg::ref_ptr<dart::gui::osg::GridVisual> grid = new dart::gui::osg::GridVisual();
+  // Print out instructions for the viewer
+  std::cout << viewer.getInstructions() << std::endl;
 
-   viewer.addAttachment(grid);
-   // Add input handler
-   viewer.addEventHandler(new NomadInputHandler(&viewer, node, g_nomad));
+  viewer.setUpViewInWindow(0, 0, 1280, 1024);
+  viewer.getCameraManipulator()->setHomePosition(::osg::Vec3(0.0f, -5.0f, 0.0f),
+                                                 ::osg::Vec3(0.0f, 0.0f, 0.0f),
+                                                 ::osg::Vec3(0.0f, 0.707f, 0.707f), false);
 
-   // Print out instructions for the viewer
-   std::cout << viewer.getInstructions() << std::endl;
+  viewer.setCameraManipulator(viewer.getCameraManipulator());
 
-   viewer.setUpViewInWindow(0, 0, 1280, 1024);
-   viewer.getCameraManipulator()->setHomePosition(::osg::Vec3(0.0f, -5.0f, 0.0f),
-                                                  ::osg::Vec3(0.0f, 0.0f, 0.0f),
-                                                  ::osg::Vec3(0.0f, 0.707f, 0.707f), false);
+  //world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("HFE_Actuator"), "hfe_link/frame"));
+  //world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("KFE_Actuator"), "kfe_link/frame"));
+  //g_world->addSimpleFrame(create_interactive_frame(dart::dynamics::Frame::World(), "world/frame"));
+  //g_world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("base_link"), "base_link/frame"));
+  //world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("upper_Leg"), "upper_link/frame"));
+  //world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("lower_Leg"), "lower_link/frame"));
 
-   viewer.setCameraManipulator(viewer.getCameraManipulator());
-
-   //world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("HFE_Actuator"), "hfe_link/frame"));
-   //world->addSimpleFrame(create_interactive_frame(leg->getBodyNode("KFE_Actuator"), "kfe_link/frame"));
-   //g_world->addSimpleFrame(create_interactive_frame(dart::dynamics::Frame::World(), "world/frame"));
-   //g_world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("base_link"), "base_link/frame"));
-   //world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("upper_Leg"), "upper_link/frame"));
-   //world->addSimpleFrame(create_interactive_frame(nomad->getBodyNode("lower_Leg"), "lower_link/frame"));
-
-   viewer.run();
+  viewer.run();
 
   return 0;
 }
