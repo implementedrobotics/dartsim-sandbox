@@ -32,6 +32,7 @@
 #include <Eigen/Dense>
 
 // Project Include Files
+#include <NomadLegController.h>
 
 
 typedef enum {
@@ -51,6 +52,8 @@ struct NomadControlData
 {
   CONTROL_MODE control_mode_;
 
+  // 0 = FL, 1 = FR, 2 = RL, 3 = RR
+  std::shared_ptr<NomadLegController> leg_controllers_[4];
   // Desired State Trajectory
   // State Data
   // Leg Force Outputs

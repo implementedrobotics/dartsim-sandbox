@@ -35,7 +35,6 @@
 #include <NomadControlData.h>
 #include <NomadPrimaryControlFSM.h>
 
-
 NomadRobot::NomadRobot(const dart::simulation::WorldPtr world)
     : world_(world)
 {
@@ -47,26 +46,28 @@ NomadRobot::NomadRobot(const dart::simulation::WorldPtr world)
 
     // Start in IDLE
     nomad_control_DATA_->control_mode_ = CONTROL_MODE::IDLE;
-}
 
+    // Reset
+    Reset();
+}
 
 void NomadRobot::ProcessInputs()
 {
     //std::cout << "Processing Inputs!" << *key_event_ << std::endl;
 
-    switch(*key_event_)
+    switch (*key_event_)
     {
-        case ::osgGA::GUIEventAdapter::KEY_S:
-            nomad_control_DATA_->control_mode_ = CONTROL_MODE::STAND;
-            std::cout << "STAND REQUEST" << std::endl;
-            break;
-            
-        case ::osgGA::GUIEventAdapter::KEY_I:
-            nomad_control_DATA_->control_mode_ = CONTROL_MODE::IDLE;
-            std::cout << "IDLE REQUEST" << std::endl;
-            break;
+    case ::osgGA::GUIEventAdapter::KEY_S:
+        nomad_control_DATA_->control_mode_ = CONTROL_MODE::STAND;
+        std::cout << "STAND REQUEST" << std::endl;
+        break;
+
+    case ::osgGA::GUIEventAdapter::KEY_I:
+        nomad_control_DATA_->control_mode_ = CONTROL_MODE::IDLE;
+        std::cout << "IDLE REQUEST" << std::endl;
+        break;
         //default:
-            //std::cout << "No Event" << std::endl;
+        //std::cout << "No Event" << std::endl;
     }
 }
 
@@ -80,12 +81,24 @@ void NomadRobot::Run(double dt)
 
 void NomadRobot::SendOutputs()
 {
-   // std::cout << "Sending Outputs!" << std::endl;
+    // std::cout << "Sending Outputs!" << std::endl;
+    for(auto leg_control : nomad_control_DATA_->leg_controllers_)
+    {
+        leg_control->Run();
+    }
 }
 
+void NomadRobot::UpdateState()
+{
+    nomad_control_DATA_->leg_controllers_[0]->UpdateState();
+    nomad_control_DATA_->leg_controllers_[1]->UpdateState();
+    nomad_control_DATA_->leg_controllers_[2]->UpdateState();
+    nomad_control_DATA_->leg_controllers_[3]->UpdateState();
+}
 void NomadRobot::Reset()
 {
-  //  std::cout << "Resetting" << std::endl;
+    //  std::cout << "Resetting" << std::endl;
+    nomad_control_FSM_->Start(world_->getTime());
 }
 void NomadRobot::LoadFromURDF(const std::string &urdf)
 {
@@ -106,11 +119,11 @@ void NomadRobot::LoadFromURDF(const std::string &urdf)
     robot_->getJoint("j_kfe_RL")->setPositionLimitEnforced(true);
     robot_->getJoint("j_kfe_RR")->setPositionLimitEnforced(true);
 
-    // int i = 0;
-    // for(auto dof:robot_->getDofs())
-    // {
-    //     std::cout << "DOF: " << i++ << " : " << dof->getName() << std::endl;
-    // }
+    int i = 0;
+    for(auto dof:robot_->getDofs())
+    {
+        std::cout << "DOF: " << i++ << " : " << dof->getName() << std::endl;
+    }
 
     // i = 0;
     // for(auto dof:robot_->getBodyNodes())
@@ -121,17 +134,44 @@ void NomadRobot::LoadFromURDF(const std::string &urdf)
     // Add to world
     world_->addSkeleton(robot_);
 
+
+    std::cout << "Mass: " << robot_->getMass() << std::endl;
 }
 
 void NomadRobot::CreateLegControllers()
 {
-   // dart::dynamics::SkeletonPtr &parent, int haa_dof_id, int haa_bn_id, int foot_bn_id
+    // dart::dynamics::SkeletonPtr &parent, int haa_dof_id, int haa_bn_id, int foot_bn_id
 
+    // FL
+    nomad_control_DATA_->leg_controllers_[0] = std::make_shared<NomadLegController>(robot_,
+                                                                                    robot_->getDof("j_haa_FL")->getIndexInSkeleton(),
+                                                                                    robot_->getBodyNode("b_haa_motor_FL")->getIndexInSkeleton(),
+                                                                                    robot_->getBodyNode("b_foot_FL")->getIndexInSkeleton());
 
-    NomadLegController controller(robot_, 
-    robot_->getDof("j_haa_FL")->getIndexInSkeleton(),
-    robot_->getBodyNode("b_haa_motor_FL")->getIndexInSkeleton(), 
-    robot_->getBodyNode("b_foot_FL")->getIndexInSkeleton());
+    // FR
+    nomad_control_DATA_->leg_controllers_[1] = std::make_shared<NomadLegController>(robot_,
+                                                                                    robot_->getDof("j_haa_FR")->getIndexInSkeleton(),
+                                                                                    robot_->getBodyNode("b_haa_motor_FR")->getIndexInSkeleton(),
+                                                                                    robot_->getBodyNode("b_foot_FR")->getIndexInSkeleton());
+
+    // RL
+    nomad_control_DATA_->leg_controllers_[2] = std::make_shared<NomadLegController>(robot_,
+                                                                                    robot_->getDof("j_haa_RL")->getIndexInSkeleton(),
+                                                                                    robot_->getBodyNode("b_haa_motor_RL")->getIndexInSkeleton(),
+                                                                                    robot_->getBodyNode("b_foot_RL")->getIndexInSkeleton());
+
+    // RR
+    nomad_control_DATA_->leg_controllers_[3] = std::make_shared<NomadLegController>(robot_,
+                                                                                    robot_->getDof("j_haa_RR")->getIndexInSkeleton(),
+                                                                                    robot_->getBodyNode("b_haa_motor_RR")->getIndexInSkeleton(),
+                                                                                    robot_->getBodyNode("b_foot_RR")->getIndexInSkeleton());
+
+    // Reset them
+    for(auto leg_control : nomad_control_DATA_->leg_controllers_)
+    {
+        leg_control->Reset();
+    }
+
 }
 void NomadRobot::SetInitialPose()
 {
@@ -151,7 +191,6 @@ void NomadRobot::SetInitialPose()
     //robot_->getDof("j_kfe_RR")->setPosition(2.2);
     //robot_->getDof("j_kfe_FR")->setPosition(2.2);
 }
-
 
 void NomadRobot::SetKeyEvent(int *key_event)
 {

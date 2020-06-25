@@ -55,30 +55,30 @@
         initial_state_ = current_state_ = state;
     }
 
-    bool FiniteStateMachine::Reset()
+    bool FiniteStateMachine::Reset(double current_time)
     {
         if (current_state_ != nullptr)
-            current_state_->Exit(); // Cleanup old state
+            current_state_->Exit(current_time); // Cleanup old state
 
-        return Start();
+        return Start(current_time);
     }
 
-    bool FiniteStateMachine::Start()
+    bool FiniteStateMachine::Start(double current_time)
     {
         cycle_count_ = 0;
 
         // TODO: Should be get time
-        start_time_ = 0.0;
+        start_time_ = current_time;
         elapsed_time_ = 0.0;
 
         current_state_ = initial_state_;
-        current_state_->Enter();
+        current_state_->Enter(current_time);
     }
 
-    bool FiniteStateMachine::Stop()
+    bool FiniteStateMachine::Stop(double current_time)
     {
         // 
-        end_time_ = start_time_ + elapsed_time_;
+        end_time_ = current_time;//start_time_ + elapsed_time_;
     }
     bool FiniteStateMachine::Run(double dt)
     {
@@ -101,7 +101,7 @@
         // }
         else
         {
-            current_state_->Run();
+            current_state_->Run(dt);
         }
         
         elapsed_time_ += dt;
@@ -110,11 +110,11 @@
     void FiniteStateMachine::TransitionTo(const StatePtr &state)
     {
         std::cout << "Transition From: [" << current_state_->GetName() << "] --> [" << state->GetName() << "]" << std::endl;
-        current_state_->Exit();
+        current_state_->Exit(elapsed_time_);
 
         current_state_ = state;
 
-        current_state_->Enter();
+        current_state_->Enter(elapsed_time_);
 
     }
     void FiniteStateMachine::TransitionTo(std::size_t state)

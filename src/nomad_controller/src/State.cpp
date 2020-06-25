@@ -43,12 +43,12 @@
         // Nothing to do
     }
 
-    void State::Enter() 
+    void State::Enter(double current_time) 
     {
-
+        start_time_ = current_time;
     }
 
-    void State::Exit()
+    void State::Exit(double current_time)
     {
         // Nothing to do
     }

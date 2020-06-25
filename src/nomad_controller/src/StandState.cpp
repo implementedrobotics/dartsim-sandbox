@@ -1,5 +1,5 @@
 /*
- * State.cpp
+ * StandState.cpp
  *
  *  Created on: June 21, 2020
  *      Author: Quincy Jones
@@ -31,54 +31,55 @@
 // Project Include Files
 #include <StandState.h>
 #include <StateTypes.h>
+#include <CubicPolynomialTrajectory.h>
 
-StandState::StandState() : FiniteStateMachine::State("STAND", ControllerState::STATE_STAND)
+StandState::StandState() : NomadState("STAND", 1)
 {
 }
-void StandState::Run()
+void StandState::Run(double dt)
 {
-    // double time_now = g_world->getTime();
-    // double h_t = stand_traj_.Position(time_now - start_time_);
-    // double a_t = stand_traj_.Acceleration(time_now - start_time_);
+    current_time_ += dt;
 
-    // //std::cout << "H: " << h_t << "to: " << g_Controller->GetFootPosition()[2] << std::endl;
-    // Eigen::Vector3d foot_pos_desired = start_pos_;
-    // foot_pos_desired[2] = h_t;
+    //double time_now = g_world->getTime();
+    for (int i = 0; i < 4; i++)
+    {
 
-    // g_Controller->SetCartesianPD(Eigen::Vector3d(125, 125, 125), Eigen::Vector3d(50, 50, 50));
-    // g_Controller->SetFootStateDesired(foot_pos_desired, Eigen::Vector3d::Zero());
+        double h_t = stand_traj_[i].Position(current_time_ - start_time_);
+        double a_t = stand_traj_[i].Acceleration(current_time_ - start_time_);
 
-    // // F = ma
-    // Eigen::Vector3d force_ff = g_Controller->Skeleton()->getMass() * Eigen::Vector3d(0, 0, -9.81);
-    // if (time_now - start_time_ <= 1.0)
-    // {
-    //     //std::cout << g_Controller->Skeleton()->getMass() << " : " << std::endl;
-    //     force_ff += g_Controller->Skeleton()->getMass() * Eigen::Vector3d(0, 0, -a_t);
-    // }
-    // g_Controller->SetForceFeedForward(force_ff);
+        //std::cout << "H: " << h_t << "to: " << g_Controller->GetFootPosition()[2] << std::endl;
+        Eigen::Vector3d foot_pos_desired = start_pos_[i];
+        foot_pos_desired[2] = h_t;
+
+        control_DATA_->leg_controllers_[i]->SetCartesianPD(Eigen::Vector3d(500, 500, 500), Eigen::Vector3d(50, 50, 50));
+        control_DATA_->leg_controllers_[i]->SetFootStateDesired(foot_pos_desired, Eigen::Vector3d::Zero());
+
+        // F = ma
+         Eigen::Vector3d force_ff = control_DATA_->leg_controllers_[i]->Skeleton()->getMass()/4 * Eigen::Vector3d(0, 0, -9.81);
+         if (current_time_ - start_time_ <= 1.0)
+         {
+             //std::cout << g_Controller->Skeleton()->getMass() << " : " << std::endl;
+             force_ff += control_DATA_->leg_controllers_[i]->Skeleton()->getMass()/4 * Eigen::Vector3d(0, 0, -a_t);
+         }
+         control_DATA_->leg_controllers_[i]->SetForceFeedForward(force_ff);
+    }
 }
-void StandState::Enter()
+void StandState::Enter(double current_time)
 {
-    // next_state_ = this; 
-    // // Cache Current Position
-    // start_pos_ = g_Controller->GetFootPosition();
-    // // Compute Trajectory from Initial Foot to Stand Height
-    // double stand_height = .41;
-    // stand_traj_.Generate(start_pos_[2], -stand_height, 0.0, 0.0, 0.0, 1.0);
-    // start_time_ = g_world->getTime();
-}
-bool StandState::Transition(std::shared_ptr<FiniteStateMachine::State> pNextState)
-{
-    // switch (pNextState->Id())
-    // {
-    // case ControllerState::STATE_STAND:
-    //   std::cout << "Transition from Stand to Stand VALID" << std::endl;
-    //   break;
-    // case ControllerState::STATE_CROUCH:
-    //   std::cout << "Transition from Stand to Crouch VALID" << std::endl;
-    //   next_state_ = pNextState;
-    //   break;
-    // default:
-    //   std::cout << "Invalid State Transition." << std::endl;
-    // }
+    // Call default enter
+    State::Enter(current_time);
+
+    current_time_ = current_time;
+
+    // Cache Current Position
+    for (int i = 0; i < 4; i++)
+    {
+        start_pos_[i] = control_DATA_->leg_controllers_[i]->GetFootPosition();
+
+        // Compute Trajectory from Initial Foot to Stand Height
+        double stand_height = .35;
+        stand_traj_[i].Generate(start_pos_[i][2], -stand_height, 0.0, 0.0, 0.0, 1.0);
+    }
+
+    std::cout << "Trajectory Generated" << std::endl;
 }

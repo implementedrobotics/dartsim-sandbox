@@ -1,5 +1,5 @@
 /*
- * CrouchState.h
+ * StandState.h
  *
  *  Created on: June 21, 2020
  *      Author: Quincy Jones
@@ -34,25 +34,33 @@
 #include <Eigen/Dense>
 
 // Project Include Files
-#include <State.h>
+#include <NomadState.h>
 #include <CubicPolynomialTrajectory.h>
 
-class StandState : public FiniteStateMachine::State
+
+class StandState : public NomadState
 {
 
 public:
-  StandState();
+    StandState();
 
-  void Enter();                     // Default Do Nothing
-  void Exit();                      // Default Do Nothing
+    // Called upon a state change and we enter this state
+    // current_time = current robot/controller time
+    void Enter(double current_time);
 
-  virtual bool Transition(std::shared_ptr<FiniteStateMachine::State> pNextState) = 0; // Force Transition
-  void Run(); // Override for state execution logic
+    // // current_time = current robot/controller time
+    // // Called upon a state change and we are exiting this state
+    // void Exit(double current_time);
+
+    // Logic to run each iteration of the state machine run
+    // dt = time step for this iteration
+    void Run(double dt) ;
 
 protected:
-    CubicPolynomialTrajectory stand_traj_;
-    double start_time_;
-    Eigen::Vector3d start_pos_;
+  CubicPolynomialTrajectory stand_traj_[4];
+  Eigen::Vector3d start_pos_[4];
+  double current_time_;
+
 };
 
 #endif // NOMAD_STAND_STATE_H_

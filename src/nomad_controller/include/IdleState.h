@@ -34,22 +34,27 @@
 #include <Eigen/Dense>
 
 // Project Include Files
-#include <State.h>
+#include <NomadState.h>
 
-class IdleState : public FiniteStateMachine::State
+class IdleState : public NomadState
 {
 
 public:
   IdleState();
 
-  void Enter();                     // Default Do Nothing
-  void Exit();                      // Default Do Nothing
+  // Called upon a state change and we enter this state
+  // current_time = current robot/controller time
+  void Enter(double current_time);
 
-  virtual bool Transition(std::shared_ptr<FiniteStateMachine::State> pNextState) = 0; // Force Transition
-  void Run(); // Override for state execution logic
+  // // current_time = current robot/controller time
+  // // Called upon a state change and we are exiting this state
+  // void Exit(double current_time);
+
+  // Logic to run each iteration of the state machine run
+  // dt = time step for this iteration
+  void Run(double dt);
 
 protected:
-
 };
 
 #endif // NOMAD_IDLE_STATE_H_

@@ -1,7 +1,7 @@
 /*
- * NomadRobot.h
+ * NomadState.h
  *
- *  Created on: June 23, 2020
+ *  Created on: June 25, 2020
  *      Author: Quincy Jones
  *
  * Copyright (c) <2020> <Quincy Jones - quincy@implementedrobotics.com/>
@@ -21,61 +21,37 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOMAD_ROBOT_H_
-#define NOMAD_ROBOT_H_
+#ifndef NOMAD_STATE_H_
+#define NOMAD_STATE_H_
 
 // C System Files
 
 // C++ System Files
 
 // Third Party Includes
-#include <dart/dynamics/Skeleton.hpp>
-#include <dart/simulation/World.hpp>
 
 // Project Include Files
-#include <NomadPrimaryControlFSM.h>
+#include <State.h>
 #include <NomadControlData.h>
-#include <NomadLegController.h>
 
-// Nomad Robot Class
-class NomadRobot
+// State Class
+class NomadState : public State
 {
-
 public:
-  // Base Class Nomad Robot
-  NomadRobot(const dart::simulation::WorldPtr world);
-  void LoadFromURDF(const std::string &urdf);
-  void CreateLegControllers();
+    // Base Class NomadState
+    // control_DATA = State Machine data container
+    NomadState(const std::string &name, std::size_t id) : State(name, id)
+    {
+    }
 
-  void ProcessInputs();
-  void Run(double dt);
-  void SendOutputs();
-
-  void UpdateState();
-  
-  // GetState() 18 dof
-
-  void SetInitialPose();
-  void Reset();
-
-  void SetKeyEvent(int *key_event);
+    void SetControllerData(std::shared_ptr<NomadControlData> data)
+    {
+        control_DATA_ = data;
+    }
 
 protected:
-  
-  void _CreateFSM();
-
-  dart::dynamics::SkeletonPtr robot_;
-  dart::simulation::WorldPtr world_;
-  std::unique_ptr<NomadPrimaryControlFSM> nomad_control_FSM_;
-  std::shared_ptr<NomadControlData> nomad_control_DATA_;
-
-  // State Vector
-  Eigen::VectorXd X_;
-
-  // Inputs Vector
-  Eigen::VectorXd U_;
-
-  int *key_event_;
+    // Data pointer to controller data pointer
+    std::shared_ptr<NomadControlData> control_DATA_;
 };
 
-#endif // NOMAD_ROBOT_H_
+#endif // NOMAD_STATE_H_

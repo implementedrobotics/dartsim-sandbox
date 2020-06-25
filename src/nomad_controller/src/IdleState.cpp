@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
 // C System Files
 
 // C++ System Files
@@ -32,28 +33,12 @@
 #include <IdleState.h>
 #include <StateTypes.h>
 
-IdleState::IdleState() : FiniteStateMachine::State("IDLE", ControllerState::STATE_IDLE)
+IdleState::IdleState() : NomadState("IDLE", 0)
 {
 }
-void IdleState::Run()
+void IdleState::Run(double dt)
 {
 }
-void IdleState::Enter()
+void IdleState::Enter(double current_time)
 {
-std::cout << "In Idle State" << std::endl;
-}
-bool IdleState::Transition(std::shared_ptr<FiniteStateMachine::State> pNextState)
-{
-    // switch (pNextState->Id())
-    // {
-    // // case ControllerState::STATE_CROUCH:
-    // //   std::cout << "Transition from Idle to Crouch VALID" << std::endl;
-    // //   break;
-    // case ControllerState::STATE_STAND:
-    //   std::cout << "Transition from Idle to Stand VALID" << std::endl;
-    //   next_state_ = pNextState;
-    //   break;
-    // default:
-    //   std::cout << "Invalid State Transition." << std::endl;
-    // }
 }

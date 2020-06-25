@@ -32,6 +32,8 @@
 #include <NomadControlData.h>
 #include <NomadPrimaryControlFSM.h>
 #include <TransitionEvent.h>
+#include <StandState.h>
+#include <IdleState.h>
 
 // Transition Events For States
 NomadTransitionEvent::NomadTransitionEvent(const std::string &name, std::shared_ptr<NomadControlData> control_data)
@@ -39,49 +41,6 @@ NomadTransitionEvent::NomadTransitionEvent(const std::string &name, std::shared_
 {
     control_DATA_ = control_data;
 }
-
-// States
-class IdleState : public State
-{
-
-public:
-    IdleState() : State("Idle", 0) {}
-
-    void Enter()
-    {
-        std::cout << "Entering State IDLE" << std::endl;
-    }
-    void Exit()
-    {
-        std::cout << "Exiting State IDLE" << std::endl;
-    }
-
-    void Run()
-    {
-        // std::cout << "State Machine RUN" << std::endl;
-    }
-};
-
-class StandState : public State
-{
-
-public:
-    StandState() : State("Stand", 1) {}
-
-    void Enter()
-    {
-        std::cout << "Entering State STAND" << std::endl;
-    }
-    void Exit()
-    {
-        std::cout << "Exiting State STAND" << std::endl;
-    }
-
-    void Run()
-    {
-        // std::cout << "State Machine RUN" << std::endl;
-    }
-};
 
 // Transitions
 class CommandRequestEvent : public NomadTransitionEvent
@@ -121,8 +80,11 @@ void NomadPrimaryControlFSM::_CreateFSM()
     ///////////////////////// Define Our States
     // Idle
     std::shared_ptr<IdleState> idle = std::make_shared<IdleState>();
+    idle->SetControllerData(control_DATA_);
+    
     // Stand
     std::shared_ptr<StandState> stand = std::make_shared<StandState>();
+    stand->SetControllerData(control_DATA_);
 
     std::shared_ptr<CommandRequestEvent> transitionStand = std::make_shared<CommandRequestEvent>("STAND TRANSITION", CONTROL_MODE::STAND, control_DATA_);
     std::shared_ptr<CommandRequestEvent> transitionIdle = std::make_shared<CommandRequestEvent>("IDLE TRANSITION", CONTROL_MODE::IDLE, control_DATA_);
@@ -139,5 +101,5 @@ void NomadPrimaryControlFSM::_CreateFSM()
     SetInitialState(idle);
 
     // Start the state machine
-    Start();
+    //Start();
 }

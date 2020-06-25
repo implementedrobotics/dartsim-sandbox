@@ -30,7 +30,10 @@
 
 // Third Party Includes
 #include <dart/dynamics/Skeleton.hpp>
+#include <dart/dynamics/BodyNode.hpp>
 #include <dart/simulation/World.hpp>
+#include <dart/dynamics/DegreeOfFreedom.hpp>
+
 #include <Eigen/Dense>
 
 // Project Include Files
@@ -103,45 +106,60 @@ public:
     Eigen::Vector3d tau_output;
     Eigen::Vector3d force_output;
 
-    tau_output = tau_feedforward_;
-    force_output = force_feedforward_;
-    force_output += k_P_cartesian_ * (foot_pos_desired_ - foot_pos_);
-    force_output += k_D_cartesian_ * (foot_vel_desired_ - foot_vel_);
-    // std::cout << leg_skeleton_->getGravityForces() << std::endl;
+     tau_output = tau_feedforward_;
+     force_output = force_feedforward_;
+     force_output += k_P_cartesian_ * (foot_pos_desired_ - foot_pos_);
+     force_output += k_D_cartesian_ * (foot_vel_desired_ - foot_vel_);
 
-    // Convert to Joint Torques
-    tau_output += J_.transpose() * force_output;
+     //std::cout << "Force Output: Z" << (force_output)[2] << std::endl;
+     // std::cout << leg_skeleton_->getGravityForces() << std::endl;
 
-    //std::cout << tau_output << std::endl;
-    //max_torque = std::max(max_torque, tau_output[2]);
-    //std::cout << max_torque << std::endl;
-    // Technically sets a force on the unactuated joint = 0.  Just be aware. I think we are just lucky it happens
-    // to match 3dof even though this leg setup is 2dof
-    //parent_skeleton_->setForce(DOF_[0])
+     // Convert to Joint Torques
+     //std::cout << J_.rows() << " to: " << J_.cols() << std::endl;
+     Eigen::VectorXd output = (J_.transpose() * force_output);
+     Eigen::VectorXd tau_temp = output.segment(DOF_[0]->getIndexInSkeleton(), 3);
 
-    DOF_[0]->setForce(tau_output[0]);
-    DOF_[1]->setForce(tau_output[1]);
-    DOF_[2]->setForce(tau_output[2]);
-   // leg_skeleton_->setForces(tau_output);
+
+     //std::cout << output << std::endl;
+     //std::cout << output.rows() << " to: " << output.cols() << std::endl;
+     //tau_output += J_.transpose() * force_output;
+    tau_output += tau_temp;
+
+  if(DOF_[0]->getIndexInSkeleton() == 6)
+    std::cout << tau_output[0] << ", " << tau_output[1] << ", " << tau_output[2] << std::endl;
+     //std::cout << tau_output << std::endl;
+     //max_torque = std::max(max_torque, tau_output[2]);
+     //std::cout << max_torque << std::endl;
+     // Technically sets a force on the unactuated joint = 0.  Just be aware. I think we are just lucky it happens
+     // to match 3dof even though this leg setup is 2dof
+     //parent_skeleton_->setForce(DOF_[0])
+
+     DOF_[0]->setForce(tau_output[0]);
+     DOF_[1]->setForce(tau_output[1]);
+     DOF_[2]->setForce(tau_output[2]);
+    //parent_skeleton_->setForces(tau_output);
   }
 
   void UpdateState()
   {
     // Compute Jacobian (Linear)  TODO: Do we want the full Jacobian with angular velocities?
     J_ = parent_skeleton_->getLinearJacobian(foot_body_, haa_body_);
-
+    //std::cout << foot_body_->getName() << " J: " << J_ << std::endl;
+    //std::cout << DOF_[0]->getIndexInSkeleton() << std::endl;
     foot_pos_ = foot_body_->getTransform(haa_body_).translation();
     foot_vel_ = J_ * parent_skeleton_->getVelocities();
+
+    //std::cout << J_.rows();
 
     // This is the same, but like using the jacobian better as it is more generic
     // TODO: See if linearvelocity is faster/cached for some reason
     //foot_vel_ = foot_body_->getLinearVelocity(hfe_body_, hfe_body_);
   }
 
-  // const SkeletonPtr &Skeleton()
-  // {
-  //   return leg_skeleton_;
-  // }
+   const dart::dynamics::SkeletonPtr &Skeleton()
+   {
+     return parent_skeleton_;
+   }
 
 protected:
   dart::dynamics::SkeletonPtr parent_skeleton_;
@@ -170,6 +188,7 @@ protected:
   Eigen::Vector3d tau_feedforward_;
 
   Eigen::MatrixXd J_; // Leg Jacobian
+
 };
 
 #endif // NOMAD_LEGCONTROLLER_H_

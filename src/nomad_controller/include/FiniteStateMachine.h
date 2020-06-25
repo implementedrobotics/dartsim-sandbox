@@ -65,17 +65,17 @@
     bool SetInitialState(StatePtr state);
 
     // Reset state machine to initial start conditions
-    virtual bool Reset();
+    virtual bool Reset(double current_time);
 
     // Initializes the state machine and runs any setup code needed before state machine
     // can be ran
-    virtual bool Start();
+    virtual bool Start(double current_time);
 
     // Run an iteration of the state machine
     virtual bool Run(double dt);
 
     // Stop state machine and cleans up
-    virtual bool Stop();
+    virtual bool Stop(double current_time);
 
     // TODO: Multiple transition functions?
     // Transition to state

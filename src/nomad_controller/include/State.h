@@ -21,8 +21,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOMAD_STATE_H_
-#define NOMAD_STATE_H_
+#ifndef STATE_H_
+#define STATE_H_
 
 // C System Files
 
@@ -80,13 +80,16 @@ public:
   virtual void Setup();
 
   // Called upon a state change and we enter this state
-  virtual void Enter();
+  // current_time = current robot/controller time
+  virtual void Enter(double current_time);
 
+  // current_time = current robot/controller time
   // Called upon a state change and we are exiting this state
-  virtual void Exit();
+  virtual void Exit(double current_time);
 
   // Logic to run each iteration of the state machine run
-  virtual void Run() = 0;
+  // dt = time step for this iteration
+  virtual void Run(double dt) = 0;
 
   // Next State to transition to
   const StatePtr& NextState() const;
@@ -97,6 +100,7 @@ protected:
 
   // State name
   std::string name_;
+
   // State id
   std::size_t id_;
   
@@ -106,8 +110,11 @@ protected:
 
   // Transition Event Map
   std::map<TransitionEventPtr, StatePtr> transition_map_; 
-};
 
+  // Start begin time
+  double start_time_;
+
+};
 //} // namespace FiniteStateMachine
 
-#endif // NOMAD_STATE_H_
+#endif // STATE_H_

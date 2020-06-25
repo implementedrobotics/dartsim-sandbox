@@ -81,6 +81,7 @@ public:
     // step is performed. This function can be deleted if it does not need
     // to be used.
     //g_Controller->UpdateState();
+    nomad_->UpdateState();
     g_key_event = 0;
     step_iter++;
   }
@@ -234,12 +235,8 @@ int main(int argc, char *argv[])
 
   g_nomad->LoadFromURDF(urdf);
   g_nomad->SetInitialPose();
-  g_nomad->SetKeyEvent(&g_key_event);
-
   g_nomad->CreateLegControllers();
-  // //   // Add Controller
-  // //   g_Controller = new LegController(nomad);
-  // //   g_Controller->Reset();
+  g_nomad->SetKeyEvent(&g_key_event);
 
   // Create osg world node
   ::osg::ref_ptr<NomadSimWorldNode> node = new NomadSimWorldNode(g_world, g_nomad);
