@@ -56,6 +56,7 @@ public:
     if (step_iter < 5)
       return;
 
+    // Reset Leg Controller
     nomad_->ProcessInputs();
     nomad_->Run(world_->getTimeStep());
     nomad_->SendOutputs();
@@ -151,8 +152,29 @@ public:
       // }
       else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_E)
       {
-        // nomad_->getBodyNode("hfe_motor")->addExtForce(Eigen::Vector3d(0,0,-5000), Eigen::Vector3d::Zero(), true, true);
+         nomad_->Skeleton()->getBodyNode("base_link")->addExtForce(Eigen::Vector3d(0,-500,0), Eigen::Vector3d::Zero(), true, true);
       }
+      else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_Q)
+      {
+         nomad_->Skeleton()->getBodyNode("base_link")->addExtForce(Eigen::Vector3d(0,500,0), Eigen::Vector3d::Zero(), true, true);
+      }
+      else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_W)
+      {
+         nomad_->Skeleton()->getBodyNode("base_link")->addExtForce(Eigen::Vector3d(-1000,0,0), Eigen::Vector3d::Zero(), true, true);
+      }
+      else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_X)
+      {
+         nomad_->Skeleton()->getBodyNode("base_link")->addExtForce(Eigen::Vector3d(1000,0,0), Eigen::Vector3d::Zero(), true, true);
+      }
+      else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_A)
+      {
+         nomad_->Skeleton()->getBodyNode("base_link")->addExtForce(Eigen::Vector3d(0,0,-5000), Eigen::Vector3d::Zero(), true, true);
+      }
+      else if (ea.getKey() == ::osgGA::GUIEventAdapter::KEY_D)
+      {
+         nomad_->Skeleton()->getBodyNode("base_link")->addExtForce(Eigen::Vector3d(0,0, 5000), Eigen::Vector3d::Zero(), true, true);
+      }
+
     }
     else if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
     {
@@ -163,6 +185,8 @@ public:
   void Reset()
   {
     //SetInitialPosition(nomad_);
+    //nomad_->SetInitialPose();
+    //nomad_->Reset();
   }
 
 protected:
@@ -199,7 +223,7 @@ SkeletonPtr CreateGround()
   BodyNodePtr body = ground->createJointAndBodyNodePair<WeldJoint>(nullptr).second;
   double thickness = 0.1;
 
-  ShapePtr groundShape = std::make_shared<BoxShape>(Eigen::Vector3d(1, 1, thickness));
+  ShapePtr groundShape = std::make_shared<BoxShape>(Eigen::Vector3d(4, 4, thickness));
   auto shapeNode = body->createShapeNodeWith<VisualAspect, CollisionAspect, DynamicsAspect>(groundShape);
 
   shapeNode->getVisualAspect()->setColor(dart::Color::LightGray());

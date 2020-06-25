@@ -47,18 +47,20 @@ public:
   void LoadFromURDF(const std::string &urdf);
   void CreateLegControllers();
 
+
   void ProcessInputs();
   void Run(double dt);
   void SendOutputs();
 
   void UpdateState();
-  
-  // GetState() 18 dof
 
+  // GetState() 18 dof
   void SetInitialPose();
   void Reset();
 
   void SetKeyEvent(int *key_event);
+
+  const dart::dynamics::SkeletonPtr& Skeleton(){return robot_;}
 
 protected:
   

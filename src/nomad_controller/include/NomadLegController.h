@@ -42,6 +42,7 @@
 class NomadLegController
 {
 public:
+double max_tau = 0.0;
 // TODO: Offset to actual contact point
 // TODO: Assumes sane indexing.  May need to support more explicit ids in constructor
    NomadLegController(dart::dynamics::SkeletonPtr &parent, int haa_dof_id, int haa_bn_id, int foot_bn_id) : parent_skeleton_(parent)
@@ -73,6 +74,7 @@ public:
     tau_feedforward_ = Eigen::Vector3d::Zero();
 
     force_feedforward_ = Eigen::Vector3d::Zero();
+
   }
 
   void SetCartesianPD(const Eigen::Vector3d &k_P, const Eigen::Vector3d &k_D)
@@ -125,8 +127,13 @@ public:
      //tau_output += J_.transpose() * force_output;
     tau_output += tau_temp;
 
-  if(DOF_[0]->getIndexInSkeleton() == 6)
-    std::cout << tau_output[0] << ", " << tau_output[1] << ", " << tau_output[2] << std::endl;
+  // if(DOF_[0]->getIndexInSkeleton() == 6)
+  // {
+  //   std::cout << tau_output[0] << ", " << tau_output[1] << ", " << tau_output[2] << std::endl;
+  //   max_tau = std::max(std::abs(tau_output[2]), max_tau);
+
+  //   std::cout << max_tau << std::endl;
+  // }
      //std::cout << tau_output << std::endl;
      //max_torque = std::max(max_torque, tau_output[2]);
      //std::cout << max_torque << std::endl;

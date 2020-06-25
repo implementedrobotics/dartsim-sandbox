@@ -71,6 +71,10 @@
         start_time_ = current_time;
         elapsed_time_ = 0.0;
 
+        if(current_state_ != nullptr)
+        {
+            current_state_->Exit(current_time);
+        }
         current_state_ = initial_state_;
         current_state_->Enter(current_time);
     }

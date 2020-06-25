@@ -73,6 +73,12 @@ void NomadRobot::ProcessInputs()
 
 void NomadRobot::Run(double dt)
 {
+    // Clear Data to leg controllers
+    nomad_control_DATA_->leg_controllers_[0]->Reset();
+    nomad_control_DATA_->leg_controllers_[1]->Reset();
+    nomad_control_DATA_->leg_controllers_[2]->Reset();
+    nomad_control_DATA_->leg_controllers_[3]->Reset();
+
     //std::cout << "Running: " << dt << std::endl;
     nomad_control_FSM_->Run(dt);
 
@@ -99,6 +105,7 @@ void NomadRobot::Reset()
 {
     //  std::cout << "Resetting" << std::endl;
     nomad_control_FSM_->Start(world_->getTime());
+
 }
 void NomadRobot::LoadFromURDF(const std::string &urdf)
 {

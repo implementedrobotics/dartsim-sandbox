@@ -21,7 +21,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 // C System Files
 
 // C++ System Files
@@ -38,6 +37,12 @@ IdleState::IdleState() : NomadState("IDLE", 0)
 }
 void IdleState::Run(double dt)
 {
+    // DAMP Velocity
+    for (int i = 0; i < 4; i++)
+    {
+        control_DATA_->leg_controllers_[i]->SetCartesianPD(Eigen::Vector3d::Zero(), Eigen::Vector3d(25, 25, 25));
+        control_DATA_->leg_controllers_[i]->SetFootStateDesired(Eigen::Vector3d::Zero(), Eigen::Vector3d::Zero());
+    }
 }
 void IdleState::Enter(double current_time)
 {
