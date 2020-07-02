@@ -141,7 +141,7 @@ void NomadRobot::LoadFromURDF(const std::string &urdf)
     // Add to world
     world_->addSkeleton(robot_);
 
-
+	std::cout << "Mass Matrix: " << robot_->getMassMatrix() << std::endl;
     std::cout << "Mass: " << robot_->getMass() << std::endl;
 }
 
