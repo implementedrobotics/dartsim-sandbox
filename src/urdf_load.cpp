@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
 
     viewer.setCameraManipulator(viewer.getCameraManipulator());
     std::cout << leg->getBodyNode("base_link")->getWorldTransform().translation();
+
     std::cout << leg->getDof(7)->getName() << std::endl;
     std::cout << leg->getDof(8)->getName() << std::endl;
     //std::cout << leg->getDof(2)->getName() << std::endl;

@@ -79,6 +79,9 @@
         "referenced": "cpp",
         "guieventadapter": "cpp",
         "eventqueue": "cpp",
-        "state": "cpp"
+        "state": "cpp",
+        "math": "cpp",
+        "bit": "cpp",
+        "ref_ptr": "cpp"
     }
 }
