@@ -23,3 +23,7 @@ target_link_libraries(input_handler_test PUBLIC ${required_libraries})
 add_executable(full_test full_test.cpp)
 target_link_libraries(full_test PUBLIC ${required_libraries})
 
+add_executable(leg_push_up leg_push_up.cpp)
+target_link_libraries(leg_push_up PUBLIC ${required_libraries})
+
+

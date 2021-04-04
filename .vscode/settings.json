@@ -82,6 +82,7 @@
         "state": "cpp",
         "math": "cpp",
         "bit": "cpp",
-        "ref_ptr": "cpp"
+        "ref_ptr": "cpp",
+        "billboard": "cpp"
     }
 }
