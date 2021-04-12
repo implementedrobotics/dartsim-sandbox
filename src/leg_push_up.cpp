@@ -8,15 +8,153 @@
 
 #include <dart/gui/osg/osg.hpp>
 
+#include <cmath>
+
+
+// C System Files
+
+// C++ System Files
+
+// Third Party Includes
+#include <Eigen/Dense>
+
+// Project Include Files
+namespace Common
+{
+    class CubicPolynomialTrajectory
+    {
+
+    public:
+        CubicPolynomialTrajectory(double q_f, double t_f);
+        CubicPolynomialTrajectory(double q_0, double q_f, double v_0, double v_f, double t_0, double t_f);
+        CubicPolynomialTrajectory(); // Empty Trajectory
+
+        void Generate(double q_f, double t_f);
+        void Generate(double q_0, double q_f, double v_0, double v_f, double t_0, double t_f);
+
+        // TODO: Check for valid t between 0<->t_f
+        double Position(double t);
+        double Velocity(double t);
+        double Acceleration(double t);
+
+    protected:
+        void ComputeCoeffs();
+
+        Eigen::Vector4d a_; // Coefficients
+
+        double q_0_;
+        double v_0_;
+        double t_0_;
+
+        double q_f_;
+        double v_f_;
+        double t_f_;
+    };
+} // namespace Common
+
+namespace Common
+{
+    CubicPolynomialTrajectory::CubicPolynomialTrajectory(double q_f, double t_f)
+        : q_0_(0.0), q_f_(q_f), v_0_(0.0), v_f_(0.0), t_0_(0.0), t_f_(t_f)
+    {
+        // Compute Coefficients
+        ComputeCoeffs();
+    }
+    CubicPolynomialTrajectory::CubicPolynomialTrajectory(double q_0, double q_f, double v_0, double v_f, double t_0, double t_f)
+        : q_0_(q_0), q_f_(q_f), v_0_(v_0), v_f_(v_f), t_0_(t_0), t_f_(t_f)
+    {
+        // Compute Coefficients
+        ComputeCoeffs();
+    }
+
+    CubicPolynomialTrajectory::CubicPolynomialTrajectory() // Empty Trajectory
+        : q_0_(0.0), q_f_(0.0), v_0_(0.0), v_f_(0.0), t_0_(0.0), t_f_(0.0)
+    {
+        // Compute Coefficients
+        ComputeCoeffs();
+    }
+
+    void CubicPolynomialTrajectory::Generate(double q_f, double t_f)
+    {
+        q_0_ = 0.0;
+        q_f_ = q_f;
+        v_0_ = 0.0;
+        v_f_ = 0.0;
+        t_0_ = 0.0;
+        t_f_ = t_f;
+
+        ComputeCoeffs();
+    }
+
+    void CubicPolynomialTrajectory::Generate(double q_0, double q_f, double v_0, double v_f, double t_0, double t_f)
+    {
+        q_0_ = q_0;
+        q_f_ = q_f;
+        v_0_ = v_0;
+        v_f_ = v_f;
+        t_0_ = t_0;
+        t_f_ = t_f;
+
+        ComputeCoeffs();
+    }
+
+    // TODO: Check for valid t between 0<->t_f
+    double CubicPolynomialTrajectory::Position(double t)
+    {
+        // Trim Position
+        // TODO: Function for this trimming/mapping
+        double t_eval = std::min(t, t_f_);
+        t_eval = std::max(t_eval, t_0_);
+        return a_(0) + a_(1) * t_eval + a_(2) * t_eval * t_eval + a_(3) * t_eval * t_eval * t_eval;
+    }
+    double CubicPolynomialTrajectory::Velocity(double t)
+    {
+        // Trim Position
+        // TODO: Function for this trimming/mapping
+        double t_eval = std::min(t, t_f_);
+        t_eval = std::max(t_eval, t_0_);
+        return a_(1) + 2 * a_(2) * t_eval + 3 * a_(3) * t_eval * t_eval;
+    }
+    double CubicPolynomialTrajectory::Acceleration(double t)
+    {
+        // Trim Position
+        // TODO: Function for this trimming/mapping
+        double t_eval = std::min(t, t_f_);
+        t_eval = std::max(t_eval, t_0_);
+        return 2 * a_(2) + 6 * a_(3) * t_eval;
+    }
+
+    void CubicPolynomialTrajectory::ComputeCoeffs()
+    {
+
+        Eigen::Matrix4d C; // Constraints
+        C << 1, t_0_, t_0_ * t_0_, t_0_ * t_0_ * t_0_,
+            0, 1, 2 * t_0_, 3 * t_0_ * t_0_,
+            1, t_f_, t_f_ * t_f_, t_f_ * t_f_ * t_f_,
+            0, 1, 2 * t_f_, 3 * t_f_ * t_f_;
+
+        Eigen::Vector4d b;
+        b << q_0_, v_0_, q_f_, v_f_;
+
+        // Solve for Coefficients
+        a_ = C.lu().solve(b);
+    }
+} // namespace Common
+
+
+
+ Common::CubicPolynomialTrajectory com_traj_;
 
 using namespace dart::dynamics;
 using namespace dart::simulation;
 
-float q1_ref = -1.2f;
-float q2_ref = -0.1f;
+float q1_ref = 0.6f;
+float q2_ref = -0.7f;
 float K_p = 50.0f;
 float K_d = 2.8f;
-
+float frequency = 1.0f;
+float diameter = 0.05f;
+double world_time = 0.0f;
 Eigen::Vector2d foot_pos_des_;
 Eigen::Vector2d foot_vel_des_;
 
@@ -72,7 +210,7 @@ public:
     hip_body_ = leg_->getBodyNode("HFE_Actuator1");
     foot_body_ = leg_->getBodyNode("Foot1");
 
-
+    // Fix our base link (the stand)
     leg_->getRootBodyNode()->moveTo<dart::dynamics::WeldJoint>(nullptr);
 
     Eigen::Vector2d foot_pos_des_ = Eigen::Vector2d::Zero();
@@ -83,11 +221,20 @@ public:
   void customPreStep()
   {
 
+    float home = 0.0308f;
+    float home2 = -0.312458f;
     // Test Foot Position
     J_ = leg_->getLinearJacobian(foot_body_, hip_body_);
-  J_ = J_.bottomRows(2);
-  // Purge X row...
-        // std::cout << leg->getJoint("leg_to_world")->getPosition(0) << std::endl;
+    J_ = J_.bottomRows(2);
+
+    foot_pos_ = foot_body_->getTransform(hip_body_).translation().tail(2);
+    foot_vel_ = (J_ * leg_->getVelocities()).tail(2);
+
+    if(step_iter == 1)
+    {
+      com_traj_.Generate(foot_pos_[1], -0.35f, 0.0, 0.0, 0.0, 3.0f);
+      std::cout << "POS: " << foot_pos_ << std::endl;
+    }
     if (step_iter < 5)
     {
       foot_pos_des_ = foot_pos_;
@@ -97,13 +244,45 @@ public:
       return;
     }
 
+        if (step_iter > 1500)
+    {
+    double foot_z_pos = com_traj_.Position(world_time);
+    double foot_z_vel = com_traj_.Velocity(world_time);
+
+    foot_pos_des_[0] = 0.0f;
+    foot_pos_des_[1] = foot_z_pos;
+    foot_vel_des_[1] = foot_z_vel;
+
+    std::cout << "DESIRED: " << foot_z_pos << " : " << foot_pos_[1] << std::endl;
+
+    }
+
+   //std::cout << "Foot Pos: " << foot_pos_[0] << ", " << foot_pos_[1] << std::endl;
+
+
+    world_time += mWorld->getTimeStep();
+
+
   //  std::cout << "YEP" << std::endl;
-    foot_pos_ = foot_body_->getTransform(hip_body_).translation().tail(2);
-    foot_vel_ = (J_ * leg_->getVelocities()).tail(2);
+
+
+   // foot_pos_des_[0] = diameter * std::sin(2 * M_PI * frequency * world_time);
+
 
    // std::cout << "YEP2" << std::endl;
-    foot_pos_des_[0] = 0.14;
-    foot_pos_des_[1] = -0.2;
+    //foot_pos_des_[0] = -0.0;//diameter * std::cos(2 * M_PI * frequency * world_time);
+    //foot_pos_des_[1] = -0.313718;//-.4;//diameter * std::sin(2 * M_PI * frequency * world_time);// - 0.2f;
+    
+    //foot_pos_des_[0] = home + diameter * std::cos(2 * M_PI * frequency * world_time);
+    //foot_pos_des_[1] = home2 + diameter * std::sin(2 * M_PI * frequency * world_time);
+    
+    //std::cout << "DES: " << foot_pos_des_[0] << std::endl;
+    
+
+    //std::cout << "Knee DES: " << foot_pos_des_[1] << std::endl;
+    //std::cout << "Knee POS: " << foot_pos_[1] << std::endl;
+
+    //std::cout << "E: " << (foot_pos_des_ - foot_pos_) << std::endl;
 
     Eigen::Vector2d force_output = Eigen::Vector2d::Zero();
     Eigen::Vector2d tau_output;
@@ -120,18 +299,23 @@ public:
     //force_output = force_feedforward_;
     force_output += k_P_cartesian_ * (foot_pos_des_ - foot_pos_);
     force_output += k_D_cartesian_ * (foot_vel_des_ - foot_vel_);
+
+    Eigen::VectorXd test = J_.transpose() * force_output;// + leg_->getGravityForces();
+
+    test[0] = 0.0f;
+
+    //test[1] = 0.0f;
+    //test[2] = 0.0f;
+    //std::cout << "Force: " << "X: " << force_output[0] << " Z: " << force_output[1] << std::endl;
+   // std::cout << "Torque: " << "hip: " << test[0] << " knee: " << test[1] << std::endl;
     // std::cout << leg_skeleton_->getGravityForces() << std::endl;
 
 
    //  std::cout  << "Foot Position: " << foot_pos_ << std::endl;
     // Convert to Joint Torques
-    Eigen::VectorXd test = J_.transpose() * force_output;
+
     //tau_output += (J_.transpose() * force_output).tail(3);
     
-
-   // std::cout << "Jacobian: " << J_.transpose().cols() << " : " << J_.transpose().rows() << std::endl;
-   // std::cout << "Position: " << foot_pos_ << std::endl;
-
     // Compute PD Torques
    // float q1_pos = hfe->getPosition();
     //float q2_pos = kfe->getPosition();
@@ -143,7 +327,7 @@ public:
 
     leg_->setForces(test);
 
-    std::cout << "TAU: " << std::endl << test << std::endl;
+    //std::cout << "TAU: " << std::endl << test << std::endl;
     // hfe->setForce(tau_output.tail(2)[0]);
     // kfe->setForce(tau_output.tail(2)[1]);
 
@@ -181,15 +365,6 @@ public:
     //nomad_->UpdateState();
     //g_key_event = 0;
     step_iter++;
-
-    // if(step_iter > 1000)
-    // {
-    //   q1_ref = -0.0f;
-    //   q2_ref = -2.0f;
-    //   K_p = 20.0f;
-    //   K_d = 0.2f;
-    //   std::cout << "Jumping!" << std::endl;
-    // }
   }
 
 protected:
@@ -261,13 +436,18 @@ SkeletonPtr LoadNomad()
   urdf.append("/LegTest/Leg.urdf");
 
   SkeletonPtr nomad = loader.parseSkeleton(urdf);
-  nomad->getDof("j_hfe")->setPosition(q1_ref);
-  nomad->getDof("j_kfe")->setPosition(q2_ref);
+  nomad->getDof("j_hfe")->setPosition(0.5f);
+  nomad->getDof("j_kfe")->setPosition(0.0f);
 
-  nomad->getJoint("j_kfe")->setPositionLimitEnforced(true);
-  nomad->getDof("j_kfe")->setDampingCoefficient(0.9f);
-  nomad->getDof("j_hfe")->setDampingCoefficient(0.9f);
+  //nomad->getJoint("j_kfe")->setPositionLimitEnforced(true);
+  nomad->getDof("j_kfe")->setDampingCoefficient(0.1f);
+  nomad->getDof("j_hfe")->setDampingCoefficient(0.1f);
   //nomad->getDof("j_kfe")->setPositionLimits(0.0f, 2.0);
+
+  nomad->getDof("slider")->setPositionLimits(-0.3, 0.0);
+
+  std::cout << nomad->getDof("slider")->getIndexInSkeleton() << std::endl;
+  nomad->getJoint("slider")->setPositionLimitEnforced(true);
 
   // Set Friction
   //std::cout << nomad->getBodyNode("foot")->getFrictionCoeff() << std::endl;
