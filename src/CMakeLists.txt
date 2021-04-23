@@ -8,6 +8,9 @@ find_package(DART 6.9.0 REQUIRED COMPONENTS ${required_components} CONFIG)
 add_executable(urdf_leg_test urdf_leg_test.cpp)
 target_link_libraries(urdf_leg_test PUBLIC ${required_libraries})
 
+add_executable(urdf_full_test urdf_full_test.cpp)
+target_link_libraries(urdf_full_test PUBLIC ${required_libraries})
+
 add_executable(urdf_load urdf_load.cpp)
 target_link_libraries(urdf_load PUBLIC ${required_libraries})
 
