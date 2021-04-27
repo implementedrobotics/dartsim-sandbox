@@ -437,10 +437,26 @@ SkeletonPtr LoadNomad()
   urdf.append("/Robot_V2/NOMAD.urdf");
 
   SkeletonPtr nomad = loader.parseSkeleton(urdf);
- // nomad->getDof("j_kfe_FL")->setPosition(0.5f);
- // nomad->getDof("j_kfe_FR")->setPosition(0.5f);
- // nomad->getDof("j_kfe_RL")->setPosition(0.5f);
- // nomad->getDof("j_kfe_RR")->setPosition(0.5f);
+
+    nomad->getDof("j_haa_FL")->setPosition(-0.75f);
+    nomad->getDof("j_haa_FR")->setPosition(0.75f);
+    nomad->getDof("j_haa_RL")->setPosition(0.75f);
+    nomad->getDof("j_haa_RR")->setPosition(-0.75f);
+
+    nomad->getJoint("j_kfe_FL")->setPositionLimitEnforced(true);
+    nomad->getJoint("j_kfe_FR")->setPositionLimitEnforced(true);
+    nomad->getJoint("j_kfe_RL")->setPositionLimitEnforced(true);
+    nomad->getJoint("j_kfe_RR")->setPositionLimitEnforced(true);
+
+    nomad->getDof("j_kfe_FL")->setPositionLimits(0.0, -2.35);
+    nomad->getDof("j_kfe_FR")->setPositionLimits(0.0, -2.35);
+    nomad->getDof("j_kfe_RL")->setPositionLimits(0.0, -2.35);
+    nomad->getDof("j_kfe_RR")->setPositionLimits(0.0, -2.35);
+
+  // nomad->getDof("j_haa_FL")->setPosition(-0.5f);
+  // nomad->getDof("j_haa_FR")->setPosition(0.5f);
+  // nomad->getDof("j_haa_RL")->setPosition(0.5f);
+  // nomad->getDof("j_haa_RR")->setPosition(-0.5f);
   //nomad->getDof("j_kfe")->setPosition(0.0f);
 
   //nomad->getJoint("j_kfe")->setPositionLimitEnforced(true);
@@ -464,7 +480,7 @@ int main(int argc, char *argv[])
   auto world = World::create();
 
   // Set Gravity
-  world->setGravity(Eigen::Vector3d(0,0,0.0));
+  world->setGravity(Eigen::Vector3d(0,0,-10.0));
 
   // Load the leg skeleton
   SkeletonPtr nomad = LoadNomad();
@@ -485,7 +501,7 @@ int main(int argc, char *argv[])
 
   Eigen::Isometry3d tf;
   tf.linear() = orientation;
-  tf.translation() = Eigen::Vector3d(0.0, 0.0, 0.85);
+  tf.translation() = Eigen::Vector3d(0.0, 0.0, 0.15);
 
   Eigen::VectorXd pos = dart::dynamics::FreeJoint::convertToPositions(tf);
 
